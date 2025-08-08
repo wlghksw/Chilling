@@ -1,1 +1,34 @@
 
+package com.example.users.controller;
+
+import com.example.users.dto.UsersDTO;
+import com.example.users.service.UsersService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/users")
+@RequiredArgsConstructor
+public class UsersController {
+
+    private final UsersService usersService;
+
+    @GetMapping("/signup")
+    public String showSignupForm() {
+        return "/users/signup";
+    }
+
+    @PostMapping("/signup")
+    public String signup(@ModelAttribute UsersDTO dto) {
+        usersService.signup(dto);
+        return "redirect:/users/login";
+    }
+
+    @GetMapping("/login")
+    public String showLoginForm() {
+        return "/users/login";
+    }
+
+}
+
