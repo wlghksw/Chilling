@@ -6,7 +6,9 @@
 전화번호 중복 X
 
 출생년도
-연도 테이블 타입 int -> DB에는 연도만 저장 (달력 할시) 이유:  2000-00-00 
-안한다면 노상관 -> DB에 연도 월 일 저장 가능
-
-
+entity -> private Integer birth_year;
+DTO -> private String birth_year;
+Service -> Integer birthInt = null;
+            if (dto.getBirth_year() != null && !dto.getBirth_year().isEmpty()) {
+                birthInt = Integer.parseInt(dto.getBirth_year().replace("-", ""));
+            }
