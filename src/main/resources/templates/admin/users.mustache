@@ -65,30 +65,47 @@
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead class="table-dark">
-                            <tr><th>ID</th><th>사용자명</th><th>이메일</th><th>역할</th><th>가입일</th><th>게시글 수</th><th>관리</th></tr>
+                            <tr><th>ID</th><th>사용자명</th><th>이메일</th><th>역할</th><th>상태</th><th>가입일</th><th>게시글 수</th><th>관리</th></tr>
                             </thead>
                             <tbody>
                             {{#users}}
-                                <tr>
+                                <tr class="{{^isActive}}table-danger{{/isActive}}">
                                     <td>{{id}}</td>
-                                    <td><strong>{{username}}</strong></td>
+                                    <td><strong>{{nickname}}</strong></td>
                                     <td>{{email}}</td>
                                     <td>
                                         {{#isAdmin}}<span class="badge bg-danger">관리자</span>{{/isAdmin}}
                                         {{^isAdmin}}<span class="badge bg-secondary">일반사용자</span>{{/isAdmin}}
                                     </td>
-                                    <td>{{createdAtFmt}}</td>
+                                    <td>
+                                        {{#isActive}}<span class="badge bg-success">활성</span>{{/isActive}}
+                                        {{^isActive}}<span class="badge bg-danger">탈퇴</span>{{/isActive}}
+                                    </td>
+                                    <td>{{createdAt}}</td>
                                     <td><span class="badge bg-info">{{postCount}}</span></td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#roleModal{{id}}">
                                                 <i class="fas fa-user-edit"></i> 역할변경
                                             </button>
-                                            <form action="/admin/users/{{id}}/delete" method="post" style="display:inline">
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('정말로 이 사용자를 삭제하시겠습니까?')">
-                                                    <i class="fas fa-trash"></i> 삭제
-                                                </button>
-                                            </form>
+                                            
+                                            {{#isActive}}
+                                                <form action="/admin/users/{{id}}/force-withdraw" method="post" style="display:inline">
+                                                    <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('정말로 이 사용자를 강제 탈퇴 처리하시겠습니까?')">
+                                                        <i class="fas fa-user-times"></i> 강제탈퇴
+                                                    </button>
+                                                </form>
+                                            {{/isActive}}
+                                            
+                                            {{^isActive}}
+                                                <form action="/admin/users/{{id}}/restore" method="post" style="display:inline">
+                                                    <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('정말로 이 사용자 계정을 복구하시겠습니까?')">
+                                                        <i class="fas fa-user-check"></i> 계정복구
+                                                    </button>
+                                                </form>
+                                            {{/isActive}}
+                                            
+
                                         </div>
                                     </td>
                                 </tr>
@@ -96,7 +113,7 @@
 
                             {{^users}}
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">
+                                    <td colspan="8" class="text-center py-4">
                                         <i class="fas fa-users fa-3x text-muted mb-3"></i><br/>
                                         <span class="text-muted">등록된 사용자가 없습니다.</span>
                                     </td>
@@ -121,7 +138,7 @@
                 </div>
                 <form action="/admin/users/{{id}}/role" method="post">
                     <div class="modal-body">
-                        <p><strong>{{username}}</strong> 사용자의 역할을 변경합니다.</p>
+                        <p><strong>{{nickname}}</strong> 사용자의 역할을 변경합니다.</p>
                         <div class="mb-3">
                             <label for="role-{{id}}" class="form-label">역할 선택</label>
                             <select name="role" id="role-{{id}}" class="form-select">

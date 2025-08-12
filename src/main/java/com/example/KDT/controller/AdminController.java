@@ -109,10 +109,19 @@ public class AdminController {
     public String adminUsers(Model model) {
         try {
             List<User> users = adminService.getAllUsers();
+            
+            // 각 사용자의 게시글 수를 User 객체에 직접 설정
+            for (User user : users) {
+                int postCount = adminService.getUserPostCount(user.getId());
+                user.setPostCount(postCount);
+            }
+            
             model.addAttribute("users", users != null ? users : new ArrayList<>());
+            model.addAttribute("usersCount", users != null ? users.size() : 0);
             return "admin/users";
         } catch (Exception e) {
             model.addAttribute("users", new ArrayList<>());
+            model.addAttribute("usersCount", 0);
             model.addAttribute("errorMessage", "사용자를 불러오는 중 오류가 발생했습니다.");
             return "admin/users";
         }
@@ -132,10 +141,33 @@ public class AdminController {
     @PostMapping("/users/{id}/role")
     public String updateUserRole(@PathVariable Long id, @RequestParam String role, RedirectAttributes redirectAttributes) {
         try {
-            adminService.updateUserRole(id, com.example.KDT.entity.UserRole.valueOf(role.toUpperCase()));
+            Boolean isAdmin = "ADMIN".equalsIgnoreCase(role);
+            adminService.updateUserRole(id, isAdmin);
             redirectAttributes.addFlashAttribute("successMessage", "사용자 역할이 성공적으로 변경되었습니다.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "사용자 역할 변경 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        return "redirect:/admin/users";
+    }
+    
+    @PostMapping("/users/{id}/force-withdraw")
+    public String forceWithdrawUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            adminService.forceWithdrawUser(id);
+            redirectAttributes.addFlashAttribute("successMessage", "사용자가 강제 탈퇴 처리되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "사용자 강제 탈퇴 중 오류가 발생했습니다: " + e.getMessage());
+        }
+        return "redirect:/admin/users";
+    }
+    
+    @PostMapping("/users/{id}/restore")
+    public String restoreUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            adminService.restoreUser(id);
+            redirectAttributes.addFlashAttribute("successMessage", "사용자 계정이 복구되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "사용자 계정 복구 중 오류가 발생했습니다: " + e.getMessage());
         }
         return "redirect:/admin/users";
     }

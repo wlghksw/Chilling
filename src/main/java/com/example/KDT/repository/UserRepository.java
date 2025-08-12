@@ -1,7 +1,6 @@
 package com.example.KDT.repository;
 
 import com.example.KDT.entity.User;
-import com.example.KDT.entity.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,13 +10,17 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     
-    Optional<User> findByUsername(String username);
+    Optional<User> findByLoginId(String loginId);
+    
+    Optional<User> findByNickname(String nickname);
     
     Optional<User> findByEmail(String email);
     
-    List<User> findByRole(UserRole role);
+    List<User> findByIsAdmin(Boolean isAdmin);
     
-    boolean existsByUsername(String username);
+    boolean existsByLoginId(String loginId);
+    
+    boolean existsByNickname(String nickname);
     
     boolean existsByEmail(String email);
 }

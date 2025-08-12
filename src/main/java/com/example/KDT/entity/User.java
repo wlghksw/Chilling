@@ -1,97 +1,92 @@
 package com.example.KDT.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "users")
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
-    
-    @Column(unique = true, nullable = false)
-    private String username;
-    
-    @Column(nullable = false)
-    private String password;
-    
-    @Column(nullable = false)
+
+    @Column(name = "login_id", unique = true, length = 50)
+    private String loginId;
+
+    @Column(name = "nickname", unique = true, length = 50)
+    private String nickname;
+
+    @Column(name = "email")
     private String email;
-    
-    @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.USER;
-    
+
+    @Column(name = "password", length = 255)
+    private String password;
+
+    @Column(name = "real_name", length = 100)
+    private String realName;
+
+    @Column(name = "phone", length = 20)
+    private String phone;
+
+    @Column(name = "birth_year")
+    private Integer birthYear;
+
+    @Column(name = "gender", length = 10)
+    private String gender;
+
+    @Column(name = "profile_image", length = 255)
+    private String profileImage;
+
+    @Column(name = "is_admin")
+    private Boolean isAdmin;
+
+    @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean isActive = true;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
     
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Post> posts = new ArrayList<>();
-    
+    @Transient
+    private Integer postCount = 0;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // 화면/보안 호환용 파생 게터
+    public String getUsername() {
+        return nickname != null ? nickname : loginId;
+    }
+
+    // 화면용 통일된 표시 이름
+    public String getDisplayName() {
+        return nickname != null ? nickname : loginId;
     }
     
-    // Getters and Setters
-    public Long getId() {
+    // ID getter 메서드
+    public Long getUserId() {
         return id;
     }
     
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public String getUsername() {
-        return username;
-    }
-    
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    public UserRole getRole() {
-        return role;
-    }
-    
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public List<Post> getPosts() {
-        return posts;
-    }
-    
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
+    // ID setter 메서드
+    public void setUserId(Long userId) {
+        this.id = userId;
     }
 }

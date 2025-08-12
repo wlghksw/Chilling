@@ -2,7 +2,6 @@ package com.example.KDT.service;
 
 import com.example.KDT.entity.Post;
 import com.example.KDT.entity.User;
-import com.example.KDT.entity.UserRole;
 import com.example.KDT.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,8 +48,8 @@ public class AdminService {
         return userRepository.findAll();
     }
     
-    public List<User> getUsersByRole(UserRole role) {
-        return userRepository.findByRole(role);
+    public List<User> getUsersByRole(Boolean isAdmin) {
+        return userRepository.findByIsAdmin(isAdmin);
     }
     
     public Optional<User> getUserById(Long id) {
@@ -65,14 +64,42 @@ public class AdminService {
         }
     }
     
-    public User updateUserRole(Long userId, UserRole role) {
+    public User updateUserRole(Long userId, Boolean isAdmin) {
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            user.setRole(role);
+            user.setIsAdmin(isAdmin);
             return userRepository.save(user);
         } else {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
+    }
+    
+    public User forceWithdrawUser(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setIsActive(false);
+            user.setUpdatedAt(java.time.LocalDateTime.now());
+            return userRepository.save(user);
+        } else {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+    }
+    
+    public User restoreUser(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setIsActive(true);
+            user.setUpdatedAt(java.time.LocalDateTime.now());
+            return userRepository.save(user);
+        } else {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+    }
+    
+    public int getUserPostCount(Long userId) {
+        return postService.getPostsByUserId(userId).size();
     }
 }
