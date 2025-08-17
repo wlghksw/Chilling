@@ -1,0 +1,20 @@
+<h1>게시글 수정</h1>
+
+<form method="post" action="/post/{{post.post_id}}/edit">
+    <div>
+        <label>제목</label>
+        <input type="text" name="title" value="{{post.title}}" required>
+    </div>
+
+    <div>
+        <label>내용</label>
+        <textarea name="content" rows="10" required>{{post.content}}</textarea>
+    </div>
+
+
+    <div style="margin-top:12px;">
+        <button type="submit">수정하기</button>
+        <a class="btn" href="/post/{{post.post_id}}">취소</a>
+        <a class="btn" href="/post/sport/{{post.sport_id}}/intro">목록으로</a>
+    </div>
+</form>

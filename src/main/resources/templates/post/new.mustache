@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>내 소개 작성</title>
+</head>
+<body>
+<h2>내 소개 작성</h2>
+
+<div>
+    닉네임: <input type="text" value="{{nickname}}" readonly>
+</div>
+
+<form method="post"
+      action="/post/sport/{{sportId}}/intro"
+      enctype="multipart/form-data">
+
+    <input type="hidden" name="categoryId" value="{{categoryId}}">
+
+
+    <div>
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title" required>
+    </div>
+
+    <div style="margin-top:12px;">
+        <label for="content">내용</label>
+        <textarea id="content" name="content" rows="8" required></textarea>
+    </div>
+
+    <div style="margin-top:12px;">
+        <label for="files">영상/사진</label>
+        <input type="file" id="files" name="files" accept="image/*,video/*" multiple>
+    </div>
+
+    <div style="margin-top:12px;">
+        <button type="submit">등록</button>
+        <a href="/post/sport/{{sportId}}/intro">취소</a>
+    </div>
+</form>
+</body>
+</html>

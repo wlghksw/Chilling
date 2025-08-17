@@ -26,11 +26,14 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
          and u.phone = :phone
          and u.birth_year = :birthYear
        """)
+
     Optional<Users> findForFindId(@Param("realName") String realName,
                                   @Param("phone") String phone,
                                   @Param("birthYear") Integer birthYear
                                   );
 
+    @Query("select u from Users u where u.user_id = :userId")
+    Optional<Users> findByUserId(@Param("userId") Long userId);
 
 
 }

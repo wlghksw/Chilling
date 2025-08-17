@@ -4,6 +4,7 @@ import com.example.users.dto.UsersDTO;
 import com.example.users.entity.Users;
 import com.example.users.repository.UsersRepository;
 import com.example.users.service.UsersService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,10 +44,16 @@ public class UsersController {
     @PostMapping("/login")
     public String login(@RequestParam String login_id,
                         @RequestParam String password,
+                        HttpSession session,
                         Model model) {
         try {
             Users user = usersService.login(login_id, password);
-            model.addAttribute("success", user.getReal_name() + "님 환영합니다");
+
+            session.setAttribute("LOGIN_USER_ID", user.getUser_id()); // PK
+            session.setAttribute("LOGIN_ID", user.getLogin_id());     // 로그인 아이디
+
+            model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("success", user.getNickname() + "님 환영합니다");
             return "users/main"; // -> 메인
         } catch (RuntimeException e) {
             model.addAttribute("error", "로그인 실패: " + e.getMessage());
@@ -93,6 +100,18 @@ public class UsersController {
         model.addAttribute("birthYear", birthYear);
 
         return "users/find_id";
+    }
+
+    @GetMapping("/posts/new")
+    public String newPostForm(HttpSession session, Model model) {
+        Long userId = (Long) session.getAttribute("LOGIN_USER_ID");
+        if (userId == null) return "redirect:/users/login"; // 미로그인 → 로그인 화면
+
+        Users user = usersRepository.findByUserId(userId).orElseThrow();
+        model.addAttribute("loginId", user.getLogin_id());
+        model.addAttribute("nickname", user.getNickname());
+        //model.addAttribute("form", new PostCreateForm());
+        return "posts/new";
     }
 
 

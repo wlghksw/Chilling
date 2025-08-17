@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{post.title}}</title>
+    <style>
+        .meta{color:#666;font-size:14px;margin-bottom:10px}
+        .content{white-space:pre-wrap; line-height:1.6}
+        .btn{display:inline-block;margin-top:16px;padding:6px 12px;
+             border:1px solid #ddd;border-radius:4px;text-decoration:none;
+             background:#f9f9f9;cursor:pointer}
+        /* 댓글/대댓글 표시 */
+        .comment-wrap{padding:8px 8px 8px 0}
+        .comment-row{border-top:1px solid #eee; padding:8px}
+        .reply{padding-left:24px;}  /* 대댓글 들여쓰기 */
+        .right{display:flex; gap:6px; align-items:center}
+        .muted{color:#888}
+        .reply-form{display:none; margin-top:8px}
+        textarea {width:100%}
+        table{width:100%; border-collapse:collapse; margin-top:8px}
+    </style>
+</head>
+<body>
+<h2>{{post.title}}</h2>
+<div class="meta">
+    작성자: {{nickname}} |
+    작성일: {{created_at}} |
+    조회수: {{post.view_count}} | 좋아요: {{post.like_count}}
+</div>
+
+<!-- 좋아요 버튼 (항상 표시) -->
+{{#isLoggedIn}}
+    <form method="post" action="/post/{{post.post_id}}/like" style="display:inline;">
+        {{#hasLiked}}
+            <button type="submit" class="btn">좋아요 취소</button>
+        {{/hasLiked}}
+        {{^hasLiked}}
+            <button type="submit" class="btn">좋아요</button>
+        {{/hasLiked}}
+    </form>
+{{/isLoggedIn}}
+{{^isLoggedIn}}
+    <button class="btn" onclick="window.location.href='/users/login'">좋아요</button>
+{{/isLoggedIn}}
+
+<div class="content">
+    {{{post.content}}}
+</div>
+
+{{#medias}}
+    {{#image}}
+        <div style="margin:8px 0">
+            <img src="{{url}}" alt="" style="max-width:100%;height:auto;border:1px solid #eee;border-radius:6px">
+        </div>
+    {{/image}}
+    {{#video}}
+        <div style="margin:8px 0">
+            <video src="{{url}}" controls style="max-width:100%;border:1px solid #eee;border-radius:6px"></video>
+        </div>
+    {{/video}}
+{{/medias}}
+
+{{#isOwner}}
+    <div style="margin-top:16px;">
+        <a class="btn" href="/post/{{post.post_id}}/edit">수정</a>
+        <form method="post" action="/post/{{post.post_id}}/delete" style="display:inline;"
+              onsubmit="return confirm('정말 삭제할까요?');">
+            <button type="submit" class="btn">삭제</button>
+        </form>
+    </div>
+{{/isOwner}}
+
+<hr>
+<h3 id="comments">댓글</h3>
+
+{{#isLoggedIn}}
+    <form action="/post/{{post.post_id}}/comments" method="post" style="margin:10px 0;">
+        <textarea name="content" rows="3" placeholder="댓글을 입력하세요." required></textarea>
+        <div style="text-align:right; margin-top:6px;">
+            <button class="btn" type="submit">댓글 등록</button>
+        </div>
+    </form>
+{{/isLoggedIn}}
+{{^isLoggedIn}}
+    <div style="margin:10px 0; color:#777;">
+        댓글 작성은 로그인 후 가능합니다.
+        <a class="btn" href="/users/login">로그인</a>
+    </div>
+{{/isLoggedIn}}
+
+<table>
+    <tbody>
+    {{#comments}}
+        <tr>
+            <!-- isReply가 true면 들여쓰기 클래스 부여 -->
+            <td class="comment-row {{#isReply}}reply{{/isReply}}">
+                <div class="comment-wrap">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <!-- 대댓글이면 ↳ 아이콘 -->
+                            {{#isReply}}<span aria-hidden="true">↳</span>&nbsp;{{/isReply}}
+                            <strong>{{nickname}}</strong>
+                            <span class="muted" style="margin-left:6px;">{{created_at}}</span>
+                        </div>
+
+                        <div class="right">
+                            {{#isLoggedIn}}{{^isReply}}
+                                <!-- 최상위 댓글에만 답글 버튼 표시 -->
+                                <button type="button" class="btn" onclick="toggleReplyForm({{comment_id}})">답글</button>
+                            {{/isReply}}{{/isLoggedIn}}
+                            {{#canDelete}}
+                                <form action="/post/comments/{{comment_id}}/delete" method="post" style="margin:0;">
+                                    <button class="btn" type="submit">삭제</button>
+                                </form>
+                            {{/canDelete}}
+                        </div>
+                    </div>
+
+                    <div style="white-space:pre-wrap; margin-top:4px;">{{content}}</div>
+
+                    <!-- 최상위 댓글에만 대댓글 입력 폼 표시 -->
+                    {{#isLoggedIn}}{{^isReply}}
+                        <form id="replyForm-{{comment_id}}" class="reply-form"
+                              action="/post/{{post.post_id}}/comments" method="post">
+                            <input type="hidden" name="parentCommentId" value="{{comment_id}}">
+                            <textarea name="content" rows="2" placeholder="답글을 입력하세요." required></textarea>
+                            <div style="text-align:right; margin-top:6px;">
+                                <button class="btn" type="submit">답글 등록</button>
+                            </div>
+                        </form>
+                    {{/isReply}}{{/isLoggedIn}}
+                </div>
+            </td>
+        </tr>
+    {{/comments}}
+    {{^comments}}
+        <tr><td style="color:#777; padding:10px 0;">첫 댓글을 남겨보세요!</td></tr>
+    {{/comments}}
+    </tbody>
+</table>
+
+<a class="btn" href="/post/sport/{{post.sport_id}}/intro">목록으로</a>
+
+<!-- 답글 폼 토글 스크립트 -->
+<script>
+    function toggleReplyForm(id){
+      var el = document.getElementById('replyForm-' + id);
+      if (!el) return;
+      el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+    }
+</script>
+
+</body>
+</html>

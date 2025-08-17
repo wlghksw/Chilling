@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>축구 내소개 목록</title>
+    <style>
+        table{border-collapse:collapse;width:100%;margin-top:12px}
+        th,td{border:1px solid #ddd;padding:8px;text-align:center}
+        th{background:#f6f6f6}
+        td.title{text-align:left}
+        .btn{display:inline-block;padding:6px 12px;border-radius:4px;text-decoration:none}
+        .btn.primary{background:#0b5cff;color:#fff}
+        .right-actions{display:flex;gap:8px;justify-content:flex-end;align-items:center;margin:10px 0}
+        .search{padding:6px 8px;border:1px solid #ddd;border-radius:4px}
+        .tabs a{display:inline-block;margin-right:6px;padding:6px 10px;border:1px solid #ddd;border-radius:6px;text-decoration:none}
+        .actions-bottom{margin-top:12px;text-align:right}
+    </style>
+</head>
+<body>
+<h2>내소개 목록 (sportId={{sportId}}, categoryId={{categoryId}})</h2>
+
+<!-- 종목 탭 -->
+<div class="tabs" style="margin-bottom:8px;">
+    <a href="/post/sport/1/intro" {{#isSoccer}}style="background:#0b5cff;color:#fff"{{/isSoccer}}>축구</a>
+    <a href="/post/sport/2/intro" {{#isFutsal}}style="background:#0b5cff;color:#fff"{{/isFutsal}}>풋살</a>
+    <a href="/post/sport/3/intro" {{#isBaseball}}style="background:#0b5cff;color:#fff"{{/isBaseball}}>야구</a>
+    <a href="/post/sport/4/intro" {{#isTennis}}style="background:#0b5cff;color:#fff"{{/isTennis}}>테니스</a>
+</div>
+
+<!-- 정렬 + 검색 -->
+<!-- 정렬 + 검색 (분리) -->
+<div class="right-actions">
+    <!-- 정렬 전용 폼 -->
+    <form id="sortForm" action="/post/sport/{{sportId}}/intro" method="get">
+        <input type="hidden" name="categoryId" value="{{categoryId}}">
+        <input type="hidden" name="q" value="{{#q}}{{.}}{{/q}}">
+        <select name="sort" onchange="document.getElementById('sortForm').submit()">
+            <option value="created_at" {{#sort_created_at}}selected{{/sort_created_at}}>최신순</option>
+            <option value="view_count" {{#sort_view_count}}selected{{/sort_view_count}}>조회수순</option>
+            <option value="like_count" {{#sort_like_count}}selected{{/sort_like_count}}>좋아요순</option>
+        </select>
+    </form>
+
+    <!-- 검색 전용 폼 -->
+    <form id="searchForm" action="/post/sport/{{sportId}}/intro" method="get" style="display:flex;gap:6px;">
+        <input type="hidden" name="categoryId" value="{{categoryId}}">
+        <input type="hidden" name="sort" value="{{#sort}}{{.}}{{/sort}}{{^sort}}created_at{{/sort}}">
+        <input class="search" type="text" name="q" value="{{#q}}{{.}}{{/q}}" placeholder="제목 검색">
+        <button class="btn" type="submit">검색</button>
+    </form>
+</div>
+
+<!-- 게시글 목록 -->
+<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>조회수</th>
+        <th>좋아요</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#posts}}
+        <tr>
+            <td>{{rowNo}}</td>
+            <td class="title"><a href="/post/{{post_id}}">{{title}}</a></td>
+            <td>{{nickname}}</td>
+            <td>{{created_at}}</td>
+            <td>{{view_count}}</td>
+            <td>{{like_count}}</td>
+        </tr>
+    {{/posts}}
+    {{^posts}}
+        <tr><td colspan="6">글이 없습니다. 첫 글을 작성해보세요!</td></tr>
+    {{/posts}}
+    </tbody>
+</table>
+
+<!-- 글쓰기 버튼 -->
+<div class="actions-bottom">
+    <a class="btn primary" href="/post/sport/{{sportId}}/intro/new">글쓰기</a>
+</div>
+
+</body>
+</html>
