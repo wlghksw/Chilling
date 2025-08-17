@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커뮤니티</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        h2 {
+            margin: 0;
+        }
+        .write-btn {
+            padding: 8px 12px;
+            border: 1px solid #000;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .write-btn:hover {
+            background-color: #f5f5f5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            font-weight: bold;
+        }
+        td a {
+            text-decoration: none;
+        }
+        td a:hover {
+            text-decoration: underline;
+        }
+        select {
+            margin-bottom: 15px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<select name="category" onchange="location.href='/community/' + this.value">
+    <option value="notice" {{#selectedCategory_Notice}}selected{{/selectedCategory_Notice}}>공지사항</option>
+    <option value="community" {{#selectedCategory_Community}}selected{{/selectedCategory_Community}}>자유게시판</option>
+</select>
+
+<div class="header">
+    <!-- Mustache 변수 `selectedCategoryName`을 사용하도록 수정 -->
+    <h2>커뮤니티 - {{selectedCategoryName}}</h2>
+    <a href="/community/{{category}}/new" class="write-btn">글 작성하기</a>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>조회수</th>
+        <th>작성일</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#posts}}
+        <tr>
+            <td>{{postId}}</td>
+            <td><a href="/community/{{category}}/{{postId}}">{{title}}</a></td>
+            <td>{{userId}}</td>
+            <td>{{viewCount}}</td>
+            <td>{{createdAt}}</td>
+        </tr>
+    {{/posts}}
+    </tbody>
+</table>
+
+</body>
+</html>

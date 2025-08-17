@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .auth-links a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: black;
+        }
+        .sport-menu {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .sport-menu a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        h1, h2 {
+            color: green;
+        }
+        .popular-posts-container {
+            margin-top: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-container">
+    <h1 style="color: green;">ㅇ[이응]</h1>
+    <div class="auth-links">
+        <a href="/login">로그인</a> |
+        <a href="/signup">회원가입</a>
+    </div>
+</div>
+
+<div class="sport-menu">
+    <a href=" " onclick="openSportWindow('축구'); return false;">축구</a>
+    <a href=" " onclick="openSportWindow('풋살 메뉴'); return false;">풋살</a>
+    <a href=" " onclick="openSportWindow('야구'); return false;">야구</a>
+    <a href=" " onclick="openSportWindow('테니스 '); return false;">테니스</a>
+</div>
+
+<script>
+    function openSportWindow(sportName) {
+        const width = 400;
+        const height = 300;
+        const left = (window.screen.width / 2) - (width / 2);
+        const top = (window.screen.height / 2) - (height / 2);
+
+        var newWindow = window.open("", "선택", 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
+
+        let htmlContent =
+          '<html>' +
+          '<head><title>' + sportName + ' 메뉴</title></head>' +
+          '<body>' +
+          '<h2>' + sportName + '</h2>' +
+          '<ul>' +
+          '<li><a href="#" onclick="window.opener.location.href=\'/community\'; window.close(); ">커뮤니티</a></li>' +
+          '<li><a href="#" onclick="window.opener.location.href=\'/club\'; window.close(); ">동호회</a></li>' +
+          '<li><a href="#" onclick="window.opener.location.href=\'/match\'; window.close();">매치신청</a></li>' +
+          '<li><a href="#" onclick="window.opener.location.href=\'/profile\'; window.close();">내소개</a></li>' +
+          '</ul>' +
+          '</body>' +
+          '</html>';
+
+        newWindow.document.write(htmlContent);
+        newWindow.document.close();
+    }
+</script>
+
+<!-- 조회수 순 인기 게시글 목록 -->
+<div class="popular-posts-container">
+    <h2>인기 게시글</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#topPosts}}
+            <tr>
+                <td>{{postId}}</td>
+                <td><a href="/community/{{category.categoryName}}/{{postId}}">{{title}}</a></td>
+                <td>{{userId}}</td>
+                <td>{{viewCount}}</td>
+            </tr>
+        {{/topPosts}}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
