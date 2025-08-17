@@ -1,0 +1,116 @@
+jun@jeonjihun-ui-MacBookAir ~ % cd ~/Downloads/users
+jun@jeonjihun-ui-MacBookAir users % pwd 
+/Users/jun/Downloads/users
+jun@jeonjihun-ui-MacBookAir users % git status
+On branch main
+nothing to commit, working tree clean
+jun@jeonjihun-ui-MacBookAir users % git pull --rebase origin main
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 2 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (2/2), 872 bytes | 218.00 KiB/s, done.
+From https://github.com/wlghksw/Chilling
+ * branch            main       -> FETCH_HEAD
+   6c94d76..f6b9d50  main       -> origin/main
+Updating 6c94d76..f6b9d50
+Fast-forward
+ Users/DB                            |  28 ----------
+ Users/Users.java                    |  49 ------------------
+ Users/UsersController.java          | 100 ------------------------------------
+ Users/UsersDTO.java                 |  24 ---------
+ Users/UsersRepository.java          |  36 -------------
+ Users/UsersService.java             |  88 -------------------------------
+ Users/users/find_id.mustache        |  66 ------------------------
+ Users/users/login.mustache          |  61 ----------------------
+ Users/users/signup.mustache         |  99 -----------------------------------
+ Users/users/signup_success.mustache |  15 ------
+ 10 files changed, 566 deletions(-)
+ delete mode 100644 Users/DB
+ delete mode 100644 Users/Users.java
+ delete mode 100644 Users/UsersController.java
+ delete mode 100644 Users/UsersDTO.java
+ delete mode 100644 Users/UsersRepository.java
+ delete mode 100644 Users/UsersService.java
+ delete mode 100644 Users/users/find_id.mustache
+ delete mode 100644 Users/users/login.mustache
+ delete mode 100644 Users/users/signup.mustache
+ delete mode 100644 Users/users/signup_success.mustache
+jun@jeonjihun-ui-MacBookAir users % mkdir -p users
+jun@jeonjihun-ui-MacBookAir users % find . -mindepth 1 -maxdepth 1 ! -name users ! -name .git -exec git mv -k {} users/ \;
+jun@jeonjihun-ui-MacBookAir users % git commit -m "Move all project files into users/ directory"
+[main c42912e] Move all project files into users/ directory
+ 63 files changed, 0 insertions(+), 0 deletions(-)
+ rename .DS_Store => users/.DS_Store (100%)
+ rename .gitattributes => users/.gitattributes (100%)
+ rename .gitignore => users/.gitignore (100%)
+ rename README.md => users/README.md (100%)
+ rename build.gradle => users/build.gradle (100%)
+ rename {gradle => users/gradle}/.DS_Store (100%)
+ rename {gradle => users/gradle}/wrapper/gradle-wrapper.jar (100%)
+ rename {gradle => users/gradle}/wrapper/gradle-wrapper.properties (100%)
+ rename gradlew => users/gradlew (100%)
+ rename gradlew.bat => users/gradlew.bat (100%)
+ rename settings.gradle => users/settings.gradle (100%)
+ rename {src => users/src}/.DS_Store (100%)
+ rename {src => users/src}/main/.DS_Store (100%)
+ rename {src => users/src}/main/java/.DS_Store (100%)
+ rename {src => users/src}/main/java/com/.DS_Store (100%)
+ rename {src => users/src}/main/java/com/example/.DS_Store (100%)
+ rename {src => users/src}/main/java/com/example/users/.DS_Store (100%)
+ rename {src => users/src}/main/java/com/example/users/UsersApplication.java (100%)
+ rename {src => users/src}/main/java/com/example/users/config/SecurityConfig.java (100%)
+ rename {src => users/src}/main/java/com/example/users/controller/CommentsController.java (100%)
+ rename {src => users/src}/main/java/com/example/users/controller/PostsController.java (100%)
+ rename {src => users/src}/main/java/com/example/users/controller/UsersController.java (100%)
+ rename {src => users/src}/main/java/com/example/users/dto/PostsDTO.java (100%)
+ rename {src => users/src}/main/java/com/example/users/dto/UsersDTO.java (100%)
+ rename {src => users/src}/main/java/com/example/users/entity/Comments.java (100%)
+ rename {src => users/src}/main/java/com/example/users/entity/Likes.java (100%)
+ rename {src => users/src}/main/java/com/example/users/entity/PostMedia.java (100%)
+ rename {src => users/src}/main/java/com/example/users/entity/Posts.java (100%)
+ rename {src => users/src}/main/java/com/example/users/entity/Users.java (100%)
+ rename {src => users/src}/main/java/com/example/users/repository/CommentsRepository.java (100%)
+ rename {src => users/src}/main/java/com/example/users/repository/LikesRepository.java (100%)
+ rename {src => users/src}/main/java/com/example/users/repository/PostMediaRepository.java (100%)
+ rename {src => users/src}/main/java/com/example/users/repository/PostsRepository.java (100%)
+ rename {src => users/src}/main/java/com/example/users/repository/UsersRepository.java (100%)
+ rename {src => users/src}/main/java/com/example/users/service/PostMediaService.java (100%)
+ rename {src => users/src}/main/java/com/example/users/service/PostsService.java (100%)
+ rename {src => users/src}/main/java/com/example/users/service/UsersService.java (100%)
+ rename {src => users/src}/main/resources/.DS_Store (100%)
+ rename {src => users/src}/main/resources/application.properties (100%)
+ rename {src => users/src}/main/resources/templates/.DS_Store (100%)
+ rename {src => users/src}/main/resources/templates/post/edit.mustache (100%)
+ rename {src => users/src}/main/resources/templates/post/list.mustache (100%)
+ rename {src => users/src}/main/resources/templates/post/new.mustache (100%)
+ rename {src => users/src}/main/resources/templates/post/view.mustache (100%)
+ rename {src => users/src}/main/resources/templates/users/find_id.mustache (100%)
+ rename {src => users/src}/main/resources/templates/users/find_pw.mustache (100%)
+ rename {src => users/src}/main/resources/templates/users/login.mustache (100%)
+ rename {src => users/src}/main/resources/templates/users/main.mustache (100%)
+ rename {src => users/src}/main/resources/templates/users/signup.mustache (100%)
+ rename {src => users/src}/main/resources/templates/users/signup_success.mustache (100%)
+ rename {src => users/src}/test/.DS_Store (100%)
+ rename {src => users/src}/test/java/.DS_Store (100%)
+ rename {src => users/src}/test/java/com/.DS_Store (100%)
+ rename {src => users/src}/test/java/com/example/.DS_Store (100%)
+ rename {src => users/src}/test/java/com/example/users/UsersApplicationTests.java (100%)
+ rename {uploads => users/uploads}/posts/59/10cc4b28f09e4fe383345f34cd7dd738.png (100%)
+ rename {uploads => users/uploads}/posts/60/251b125f32f54151a37df9f890a1c85e.png (100%)
+ rename {uploads => users/uploads}/posts/61/03b371c0d0c14ae9ab055e25be2fc671.png (100%)
+ rename {uploads => users/uploads}/posts/62/b01f4c2d738a432fb06430ea1c50f582.png (100%)
+ rename {uploads => users/uploads}/posts/63/90d7b3a004a641439b62f22297652e64.png (100%)
+ rename {uploads => users/uploads}/posts/64/e217f76ffe814778b8a6697898466968.png (100%)
+ rename {uploads => users/uploads}/posts/65/16afec45360b47c38b5ce6a87b5bc39c.png (100%)
+ rename {uploads => users/uploads}/posts/66/9f7d5df036e3483d8ccb1b5bc3517e32.png (100%)
+jun@jeonjihun-ui-MacBookAir users % git push origin main
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (1/1), done.
+Writing objects: 100% (2/2), 254 bytes | 254.00 KiB/s, done.
+Total 2 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/wlghksw/Chilling.git
+   f6b9d50..c42912e  main -> main
+jun@jeonjihun-ui-MacBookAir users % 
