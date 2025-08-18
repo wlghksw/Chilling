@@ -1,0 +1,32 @@
+{{>layout/header}}
+
+<div class="team-detail">
+    <h2>{{team_name}}</h2>
+
+    <div class="team-info">
+        {{#existingImage}}
+            <img src="{{existingImage}}" alt="팀 로고" class="team-logo">
+        {{/existingImage}}
+        {{^existingImage}}
+            <span>로고 없음</span>
+        {{/existingImage}}
+
+        <p><strong>팀 설명:</strong> {{team_description}}</p>
+        <p><strong>지역:</strong> {{regionName}}</p>
+        <p><strong>최대 인원:</strong> {{max_members}}명</p>
+        <p><strong>주 경기 요일:</strong> {{game_day}}</p>
+    </div>
+
+    <div class="actions">
+        {{#loginUser}}
+            {{#isCaptain}}
+                <a href="/team/edit/{{team_id}}">수정</a> |
+                <a href="/team/delete/{{team_id}}" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
+            {{/isCaptain}}
+        {{/loginUser}}
+        <a href="/team/home">목록으로</a>
+    </div>
+</div>
+
+{{>layout/footer}}
+

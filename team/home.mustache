@@ -1,0 +1,52 @@
+{{>layout/header}}
+<link rel="stylesheet" href="/css/team.css">
+
+<div class="team-container">
+    <!-- 목록(홈) 내 검색 -->
+    <aside>
+        <form method="get" action="/team/home">
+            <input type="text" name="keyword" value="{{keyword}}" placeholder="팀 이름"><br><br>
+            <button type="submit">검색</button>
+        </form>
+
+        <div style="margin-top: 10px;">
+            <a href="/team/new"><button type="button" class="register-btn">팀 등록하기</button></a>
+        </div>
+    </aside>
+
+    <!-- 팀 목록 -->
+    <main>
+        <table>
+            <thead>
+            <tr>
+                <th>팀로고</th>
+                <th>팀 이름</th>
+                <th>인원수</th>
+                <th>지역</th>
+                <th>주 경기 요일</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#teams}}
+                <tr>
+                    <td>
+                        {{#existingImage}}
+                            <img src="{{existingImage}}" alt="로고" class="logo">
+                        {{/existingImage}}
+                        {{^existingImage}}
+                            <span>로고 없음</span>
+                        {{/existingImage}}
+                    </td>
+                    <td>{{teamName}}</td>
+                    <td>{{maxMembers}}명</td>
+                    <td>{{regionName}}</td>
+                    <td>{{gameDay}}</td>
+                </tr>
+            {{/teams}}
+            </tbody>
+        </table>
+    </main>
+</div>
+{{>layout/footer}}
+
+

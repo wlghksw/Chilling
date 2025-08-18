@@ -1,0 +1,31 @@
+{{>layout/header}}
+<meta charset="UTF-8">
+<title>마이페이지</title>
+<body>
+<h1 class="center">마이페이지</h1>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<h3 class="center">사용자 닉네임 정보</h3>
+<h4 class="center">{{username}}</h4>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<h3 class="center">작성한 게시글 목록</h3>
+<table>
+<tr>
+    <th class="center">게시글 제목</th>
+    {{#posts}}
+        <td>
+            <span>{{title}}</span>
+        </td>
+    {{/posts}}
+</tr>
+
+
+{{^posts}}
+    <p>아직 작성한 게시글이 없습니다.</p>
+{{/posts}}
+</table>
+<div class="mt-4">
+    <a href="/mypage/{{userId}}/edit" class="btn btn-warning" align="right">정보 수정</a>
+    <a href="/mypage/{{userId}}/delete" class="btn btn-danger" onclick="return confirm('정말로 회원을 탈퇴하시겠습니까?')" align="right">회원 탈퇴</a>
+</div>
+
+{{>layout/footer}}

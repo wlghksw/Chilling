@@ -1,0 +1,26 @@
+{{>layout/header}}
+
+<h1>마이페이지 수정페이지</h1>
+
+<form action="/mypage/update" method="post">
+    <input type="hidden" name="userId" value="{{user.userId}}">
+
+    <div class="mb-3">
+        <label>아이디(닉네임)</label>
+        <input type="text" name="nickname" value="{{user.nickname}}" class="form-control">
+    </div>
+
+
+    <h3>게시글 제목 수정</h3>
+    {{#posts}}
+        <div class="mb-3">
+            <input type="hidden" name="posts[{{index}}].postId" value="{{postId}}">
+            <input type="text" name="posts[{{index}}].title" value="{{title}}" class="form-control">
+        </div>
+    {{/posts}}
+
+    <button type="submit" class="btn btn-primary">수정하기</button>
+    <a href="/mypage/read" class="btn btn-secondary">돌아가기</a>
+</form>
+
+{{>layout/footer}}

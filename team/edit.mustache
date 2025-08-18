@@ -1,0 +1,45 @@
+{{>layout/header}}
+
+<h2>팀 수정</h2>
+
+<form action="/team/update" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="team_id" value="{{team_id}}">
+
+    <label>팀 이름</label>
+    <input type="text" name="team_name" value="{{team_name}}" required><br><br>
+
+    <label>최대 인원</label>
+    <input type="number" name="max_members" value="{{max_members}}" required><br><br>
+
+    <label>지역</label>
+    <input type="radio" name="regionName" value="dongnamgu" {{#isDongnam}}checked{{/isDongnam}}>동남구
+    <input type="radio" name="regionName" value="seobukgu" {{#isSeobuk}}checked{{/isSeobuk}}>서북구<br><br>
+
+    <label>주 경기 요일</label>
+    <select name="game_day">
+        <option value="월" {{#isMon}}selected{{/isMon}}>월</option>
+        <option value="화" {{#isTue}}selected{{/isTue}}>화</option>
+        <option value="수" {{#isWed}}selected{{/isWed}}>수</option>
+        <option value="목" {{#isThu}}selected{{/isThu}}>목</option>
+        <option value="금" {{#isFri}}selected{{/isFri}}>금</option>
+        <option value="토" {{#isSat}}selected{{/isSat}}>토</option>
+        <option value="일" {{#isSun}}selected{{/isSun}}>일</option>
+    </select><br><br>
+
+    <label>소개</label>
+    <textarea name="team_description">{{team_description}}</textarea><br><br>
+
+    <label>팀 로고</label>
+    <input type="file" name="teamImage"><br>
+    {{#existingImage}}
+        <small>현재 이미지: <img src="{{existingImage}}" alt="팀 로고" style="max-height:50px;"></small>
+    {{/existingImage}}
+    {{^existingImage}}
+        <small>현재 등록된 이미지 없음</small>
+    {{/existingImage}}<br><br>
+
+    <button type="submit">수정하기</button>
+</form>
+
+{{>layout/footer}}
+

@@ -1,0 +1,40 @@
+{{>layout/header}}
+<div class="team-container" align="center">
+<h2>팀 등록하기</h2> <br><br>
+
+<form action="/team/save" method="post" enctype="multipart/form-data">
+    <label>팀 이름</label>&nbsp;&nbsp;
+    <input type="text" name="teamName" required><br><br>
+
+    <label>최대 인원</label>
+    <input type="number" name="maxMembers" required><br><br>
+
+    <label>현재 인원</label>
+    <input type="number" name="currentMembers" required><br><br>
+
+    <label>지역</label>
+    <input type="radio" name="regionName" value="dongnamgu"/>동남구
+    <input type="radio" name="regionName" value="seobukgu"/>서북구<br><br>
+
+    <label>주 경기 요일</label>
+        <select name="game_day">
+            <option value="mon">월</option>
+            <option value="tue">화</option>
+            <option value="wes">수</option>
+            <option value="thu">목</option>
+            <option value="fri">금</option>
+            <option value="sat">토</option>
+            <option value="sun">일</option>
+        </select>
+    <br><br>
+
+    <label>소개</label>
+    <textarea name="teamDescription" cols="10" rows="1"></textarea><br><br>
+
+    <label>팀 로고</label>
+    <input type="file" name="teamImage"><br><br>
+
+    <button type="submit">등록하기</button>
+</form>
+</div>
+{{>layout/footer}}

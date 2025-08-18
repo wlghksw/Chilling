@@ -1,0 +1,11 @@
+<form action="/team/save" method="post" enctype="multipart/form-data">
+    <input type="text" name="teamName" placeholder="팀 이름" />
+    <input type="number" name="maxMembers" placeholder="최대 인원" />
+    <input type="number" name="currentMembers" placeholder="현재 인원" />
+    <input type="radio" name="regionName" value="dongnamgu">동남구
+    <input type="radio" name="regionName" value="seobukgu">서북구
+    <input type="text" name="gameDay" placeholder="게임 요일" />
+    <textarea name="teamDescription" placeholder="소개"></textarea>
+    <input type="file" name="teamFile" />
+    <button type="submit">등록하기</button>
+</form>
