@@ -17,19 +17,19 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "login_id", unique = true, length = 50)
+    @Column(name = "login_id", unique = true, length = 50, nullable = false)
     private String loginId;
 
-    @Column(name = "nickname", unique = true, length = 50)
+    @Column(name = "nickname", unique = true, length = 50, nullable = false)
     private String nickname;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "password", length = 255)
+    @Column(name = "password", length = 255, nullable = false)
     private String password;
 
-    @Column(name = "real_name", length = 100)
+    @Column(name = "real_name", length = 100, nullable = false)
     private String realName;
 
     @Column(name = "phone", length = 20)
@@ -38,14 +38,15 @@ public class User {
     @Column(name = "birth_year")
     private Integer birthYear;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender", length = 10)
-    private String gender;
+    private Gender gender;
 
     @Column(name = "profile_image", length = 255)
     private String profileImage;
 
-    @Column(name = "is_admin")
-    private Boolean isAdmin;
+    @Column(name = "is_admin", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isAdmin = false;
 
     @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isActive = true;
@@ -57,7 +58,11 @@ public class User {
     private LocalDateTime updatedAt;
     
     @Transient
-    private Integer postCount = 0;
+    private Integer postCount;
+
+    public enum Gender {
+        male, female
+    }
 
     @PrePersist
     protected void onCreate() {

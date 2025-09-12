@@ -23,4 +23,9 @@ public interface MatchApplicationRepository extends JpaRepository<MatchApplicati
     
     @Query("SELECT ma FROM MatchApplication ma WHERE ma.match.matchId = :matchId AND ma.status = 'PENDING'")
     List<MatchApplication> findPendingApplicationsByMatch(@Param("matchId") Long matchId);
+    
+    Optional<MatchApplication> findByMatchMatchIdAndPositionAndStatus(Long matchId, String position, MatchApplication.ApplicationStatus status);
+
+    // 특정 매치의 특정 포지션에 대한 승인된 신청 수 조회
+    long countByMatchMatchIdAndPositionAndStatus(Long matchId, String position, MatchApplication.ApplicationStatus status);
 }

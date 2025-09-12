@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매치 수정 - KDT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h2><i class="fas fa-edit"></i> 매치 수정</h2>
+                <p class="text-muted">매치 정보를 수정해주세요</p>
+            </div>
+        </div>
+
+        {{#error}}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> {{error}}
+        </div>
+        {{/error}}
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="/match/{{match.matchId}}/edit" method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="venue" class="form-label">구장 <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="venue" name="venue.venueId" required>
+                                        <option value="">구장을 선택하세요</option>
+                                        {{#venues}}
+                                        <option value="{{venueId}}" data-match-venue="{{#match.venue}}{{venueId}}{{/match.venue}}">
+                                            {{venueName}} ({{#region}}{{regionName}}{{/region}})
+                                        </option>
+                                        {{/venues}}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="sport" class="form-label">스포츠 <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="sport" name="sport.sportId" required>
+                                        <option value="">스포츠를 선택하세요</option>
+                                        {{#sports}}
+                                        <option value="{{sportId}}" data-match-sport="{{#match.sport}}{{sportId}}{{/match.sport}}">
+                                            {{sportName}}
+                                        </option>
+                                        {{/sports}}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="matchDate" class="form-label">경기 날짜 <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="matchDate" name="matchDate" 
+                                           value="{{match.matchDate}}" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="startTime" class="form-label">시작 시간 <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" id="startTime" name="startTime" 
+                                           value="{{match.startTime}}" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="endTime" class="form-label">종료 시간 <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" id="endTime" name="endTime" 
+                                           value="{{match.endTime}}" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="maxPlayers" class="form-label">최대 참가자 수 <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="maxPlayers" name="maxPlayers" 
+                                           value="{{match.maxPlayers}}" min="1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="status" class="form-label">상태</label>
+                                    <select class="form-select" id="status" name="status">
+                                        <option value="OPEN" data-match-status="{{match.status}}">모집중</option>
+                                        <option value="FULL" data-match-status="{{match.status}}">마감</option>
+                                        <option value="CANCELLED" data-match-status="{{match.status}}">취소</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">매치 설명</label>
+                                <textarea class="form-control" id="description" name="description" rows="4" 
+                                          placeholder="매치에 대한 설명을 입력하세요">{{match.description}}</textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="/match/{{match.matchId}}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> 상세보기로
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> 매치 수정
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0"><i class="fas fa-info-circle"></i> 수정 안내</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                구장과 스포츠는 반드시 선택해야 합니다
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                경기 날짜는 오늘 이후로 설정해주세요
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                시작 시간은 종료 시간보다 이전이어야 합니다
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                최대 참가자 수는 현재 참가자 수보다 많아야 합니다
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 페이지 로드 시 기존 선택된 값들 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            // 구장 선택
+            const venueSelect = document.getElementById('venue');
+            const venueOptions = venueSelect.querySelectorAll('option');
+            venueOptions.forEach(option => {
+                if (option.dataset.matchVenue && option.dataset.matchVenue === option.value) {
+                    option.selected = true;
+                }
+            });
+
+            // 스포츠 선택
+            const sportSelect = document.getElementById('sport');
+            const sportOptions = sportSelect.querySelectorAll('option');
+            sportOptions.forEach(option => {
+                if (option.dataset.matchSport && option.dataset.matchSport === option.value) {
+                    option.selected = true;
+                }
+            });
+
+            // 상태 선택
+            const statusSelect = document.getElementById('status');
+            const statusOptions = statusSelect.querySelectorAll('option');
+            statusOptions.forEach(option => {
+                if (option.dataset.matchStatus && option.dataset.matchStatus === option.value) {
+                    option.selected = true;
+                }
+            });
+        });
+
+        // 구장 선택 시 자동으로 스포츠 설정
+        document.getElementById('venue').addEventListener('change', function() {
+            const venueId = this.value;
+            const sportSelect = document.getElementById('sport');
+            
+            console.log('구장 선택됨:', venueId);
+            
+            if (venueId) {
+                // 구장 ID로 스포츠 정보 가져오기
+                console.log('스포츠 정보 요청 중...');
+                fetch(`/match/venue/${venueId}/sport`)
+                    .then(response => {
+                        console.log('응답 상태:', response.status);
+                        if (!response.ok) {
+                            throw new Error('HTTP ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(sport => {
+                        console.log('받은 스포츠 정보:', sport);
+                        if (sport && sport.sportId) {
+                            // 스포츠 선택 박스에서 해당 스포츠 찾기
+                            let found = false;
+                            for (let option of sportSelect.options) {
+                                if (option.value == sport.sportId) {
+                                    option.selected = true;
+                                    found = true;
+                                    console.log('스포츠 자동 선택됨:', sport.sportName);
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                console.log('해당 스포츠를 찾을 수 없음:', sport.sportId);
+                            }
+                        } else {
+                            console.log('스포츠 정보가 없음');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('스포츠 정보를 가져오는데 실패했습니다:', error);
+                    });
+            } else {
+                // 구장이 선택되지 않은 경우 스포츠 선택 초기화
+                sportSelect.selectedIndex = 0;
+                console.log('구장 선택 해제됨, 스포츠 초기화');
+            }
+        });
+    </script>
+</body>
+</html>

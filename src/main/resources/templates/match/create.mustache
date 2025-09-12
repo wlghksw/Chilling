@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매치 등록 - KDT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- ===== Header (스크린샷 스타일) ===== -->
+    <style>
+        .ee-topbar2{
+            position: sticky; top:0; z-index: 1000;
+            height:56px; display:flex; align-items:center;
+            background:#cfe7ff; /* 연한 하늘색 */
+            border-bottom:1px solid #a9c8e7;
+            color:#111;
+        }
+        .ee-topbar2 .inner{
+            max-width:1200px; margin:0 auto; width:100%;
+            padding:0 16px; display:flex; align-items:center; justify-content:space-between;
+            font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Helvetica, Arial, sans-serif;
+        }
+        .ee-brand2{ display:flex; align-items:center; gap:8px; font-weight:700; }
+        .ee-dot{ width:20px; height:20px; border-radius:50%; border:3px solid #000; position:relative; display:inline-block; }
+        .ee-dot::after{ content:""; position:absolute; inset:5px; background:#000; border-radius:50%; }
+
+        .ee-right2{ display:flex; align-items:center; gap:18px; }
+        .ee-links2{ display:flex; align-items:center; gap:12px; }
+        .ee-links2 a{ color:#111; text-decoration:none; font-weight:600; }
+        .ee-sep{ color:#333; opacity:.7; }
+
+        .ee-menu2{ font-size:22px; line-height:1; cursor:pointer; }
+    </style>
+
+    <!-- ===== Footer (스크린샷 스타일) ===== -->
+    <style>
+        .ee-footer2{
+            margin-top:28px; background:#b4b8bf; /* 중간 회색 */
+            border-top:1px solid #9aa0a6; color:#111;
+            font-size:14px;
+            font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Helvetica, Arial, sans-serif;
+        }
+        .ee-footer2 .inner{
+            max-width:1200px; margin:0 auto; padding:12px 16px;
+            display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+        }
+        .ee-footer2 .brand{
+            display:inline-flex; align-items:center; gap:8px; margin-right:8px;
+        }
+        .ee-footer2 .dot{ width:18px; height:18px; border-radius:50%; border:3px solid #000; position:relative; display:inline-block; }
+        .ee-footer2 .dot::after{ content:""; position:absolute; inset:5px; background:#000; border-radius:50%; }
+        .ee-footer2 a{ color:#1d4ed8; text-decoration:underline; }
+        .ee-footer2 .spacer{ margin:0 6px; opacity:.7; }
+        .ee-footer2 .copy{ margin-left:auto; white-space:nowrap; }
+    </style>
+</head>
+<body>
+
+<!-- ===== 헤더 (이미지 스타일로) ===== -->
+<header class="ee-topbar2">
+    <div class="inner">
+        <div class="ee-brand2">
+            <span class="ee-dot" aria-hidden="true"></span>
+            <span>[이응]</span>
+        </div>
+        <div class="ee-right2">
+            <nav class="ee-links2">
+                <i class="fa-regular fa-user"></i>
+                <a href="/users/edit">마이페이지</a>
+                <span class="ee-sep">|</span>
+                <a href="/logout">로그아웃</a>
+            </nav>
+            <div class="ee-menu2" aria-label="menu" role="button" tabindex="0">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ===== 헤더 끝 ===== -->
+
+<!-- ====== 여기부터 '원본 매치 등록 코드' 그대로 ====== -->
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-plus-circle"></i> 매치 등록</h2>
+            <p class="text-muted">새로운 매치를 등록해주세요</p>
+        </div>
+    </div>
+
+    {{#error}}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> {{error}}
+        </div>
+    {{/error}}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form action="/match/create" method="post">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="venue" class="form-label">구장 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="venue" name="venue.venueId" required>
+                                    <option value="">구장을 선택하세요</option>
+                                    {{#venues}}
+                                        <option value="{{venueId}}">
+                                            {{venueName}} ({{#region}}{{regionName}}{{/region}})
+                                        </option>
+                                    {{/venues}}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sport" class="form-label">스포츠 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="sport" name="sport.sportId" required>
+                                    <option value="">스포츠를 선택하세요</option>
+                                    {{#sports}}
+                                        <option value="{{sportId}}">
+                                            {{sportName}}
+                                        </option>
+                                    {{/sports}}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="matchDate" class="form-label">경기 날짜 <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="matchDate" name="matchDateStr" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="startTime" class="form-label">시작 시간 <span class="text-danger">*</span></label>
+                                <input type="time" class="form-control" id="startTime" name="startTimeStr" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="endTime" class="form-label">종료 시간 <span class="text-danger">*</span></label>
+                                <input type="time" class="form-control" id="endTime" name="endTimeStr" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="maxPlayers" class="form-label">최대 참가자 수 <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="maxPlayers" name="maxPlayers" min="1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="status" class="form-label">상태</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="OPEN" selected>모집중</option>
+                                    <option value="FULL">마감</option>
+                                    <option value="CANCELLED">취소</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">매치 설명</label>
+                            <textarea class="form-control" id="description" name="description" rows="4"
+                                      placeholder="매치에 대한 설명을 입력하세요"></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/match/list" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> 목록으로
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> 매치 등록
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-info-circle"></i> 등록 안내</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            구장과 스포츠는 반드시 선택해야 합니다
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            경기 날짜는 오늘 이후로 설정해주세요
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            시작 시간은 종료 시간보다 이전이어야 합니다
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            최대 참가자 수는 1명 이상이어야 합니다
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====== 원본 끝 ====== -->
+
+<!-- ===== 푸터 (이미지 스타일로) ===== -->
+<footer class="ee-footer2">
+    <div class="inner">
+            <span class="brand">
+                <span class="dot" aria-hidden="true"></span>
+                <strong>[이응]</strong>
+            </span>
+        <span class="spacer">|</span>
+        <span>이응(EEUNG)</span>
+        <span class="spacer">|</span>
+        <span>041-123-4567</span>
+        <span class="spacer">|</span>
+        <a href="mailto:contact@eeung-sports.com">contact@eeung-sports.com</a>
+        <span class="spacer">|</span>
+        <span>충남 천안시 동남구 백석대학로 (백석대 스포츠센터 3층)</span>
+        <span class="spacer">|</span>
+        <span>SNS:
+                <a href="#" target="_blank" rel="noopener">Instagram</a>
+                <span class="spacer"> </span>
+                <a href="#" target="_blank" rel="noopener">Facebook</a>
+                <span class="spacer"> </span>
+                <a href="#" target="_blank" rel="noopener">YouTube</a>
+            </span>
+        <span class="copy">© 2025 EEUNG. All rights reserved.</span>
+    </div>
+</footer>
+<!-- ===== 푸터 끝 ===== -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // (원본 그대로) 구장 선택 시 자동으로 스포츠 설정
+    document.getElementById('venue').addEventListener('change', function() {
+        const venueId = this.value;
+        const sportSelect = document.getElementById('sport');
+        if (venueId) {
+            fetch(`/match/venue/${venueId}/sport`)
+                .then(response => {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.json();
+                })
+                .then(sport => {
+                    if (sport && sport.sportId) {
+                        for (let option of sportSelect.options) {
+                            if (option.value == sport.sportId) {
+                                option.selected = true;
+                                break;
+                            }
+                        }
+                    }
+                })
+                .catch(err => console.error('스포츠 정보를 가져오는데 실패했습니다:', err));
+        } else {
+            sportSelect.selectedIndex = 0;
+        }
+    });
+</script>
+</body>
+</html>

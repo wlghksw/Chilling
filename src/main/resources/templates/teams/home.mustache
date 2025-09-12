@@ -1,0 +1,331 @@
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>동호회</title>
+    <style>
+        :root { --maxw: 1200px; }
+        .logo{ display:inline-flex; align-items:center; color:#111; text-decoration:none; }
+        .logo .eeung-logo{ width:150px; height:auto; display:block; }
+        .logo.sm .eeung-logo{ width:120px; }
+        .logo.lg .eeung-logo{ width:180px; }
+        .site-header{ background:#e9f2ff; border-bottom:1px solid #cfe0ff; }
+        .topbar{
+            max-width:var(--maxw); margin:0 auto; height:60px;
+            display:flex; align-items:center; justify-content:space-between; padding:0 20px;
+        }
+        .auth-links a{ margin-left:10px; text-decoration:none; color:#111; }
+        .auth-links .sep{ color:#c3c3c3; margin:0 6px; }
+        .sport-nav{ background:#fff; border-top:1px solid #e5eefc; }
+        .sport-menu{ max-width:var(--maxw); margin:0 auto; display:flex; gap:20px; padding:12px 20px; }
+        .sport-menu a{ text-decoration:none; color:#007bff; font-weight:bold; }
+        /* ===== Base ===== */
+        :root { --maxw: 1200px; }
+        *{box-sizing:border-box}
+        body{ margin:0; font-family:Arial, sans-serif; background:#f7f7f7; color:#111;}
+        /* ===== Logo (uses currentColor) ===== */
+        .logo{ display:inline-flex; align-items:center; color:#111; text-decoration:none; }
+        .logo .eeung-logo{ width:150px; height:auto; display:block; }
+        .logo.sm .eeung-logo{ width:120px; }
+        .logo.lg .eeung-logo{ width:180px; }
+        /* ===== Header ===== */
+        .site-header{ background:#e9f2ff; border-bottom:1px solid #cfe0ff; }
+        .topbar{ max-width:var(--maxw); margin:0 auto; height:60px;
+        display:flex; align-items:center; justify-content:space-between; padding:0 20px; }
+        .auth-links a{ margin-left:10px; text-decoration:none; color:#111; }
+        .auth-links .sep{ color:#c3c3c3; margin:0 6px; }
+        .sport-nav{ background:#fff; border-top:1px solid #e5eefc; }
+        .sport-menu{ max-width:var(--maxw); margin:0 auto; display:flex; gap:20px; padding:12px 20px; }
+        .sport-menu a{ text-decoration:none; color:#007bff; font-weight:bold; }
+        /* ===== Footer ===== */
+        .site-footer{ margin-top:40px; background:#e5e7eb; border-top:1px solid #d1d5db; }
+        .footer-inner{ max-width:var(--maxw); margin:0 auto; padding:16px 20px; color:#111827; font-size:14px; }
+        .footer-row{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:6px; }
+        .sns a{ color:#111827; text-decoration:underline; margin-right:10px; }
+
+        /* new.mustache에 있던 버튼 스타일을 추가하여 병합합니다. */
+        .btn {
+            appearance: none;
+            border: none; /* 기존 border: 1px solid #0a66c2; 제거 */
+            border-radius: 12px; /* 기존 border-radius: 8px; 변경 */
+            padding: 12px 18px; /* 기존 padding: 6px 14px; 변경 */
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            background: #2563eb; /* 기존 배경색 변경 */
+            color: #fff;
+        }
+        .btn:hover {
+            background: #1d4ed8; /* 기존 호버 배경색 변경 */
+        }
+        .team-list{width:100%;border-collapse:collapse;table-layout:fixed}
+        .team-list th,.team-list td{padding:10px 12px;border-bottom:1px solid #eee;vertical-align:middle}
+        /* ✅ 수정된 부분: 테이블 헤더 스타일 */
+        .team-list thead{
+            background-color: #007bff; /* 헤더 전체에 파란색 배경 적용 */
+        }
+        .team-list thead th{
+            font-weight:700;
+            text-align:left;
+            color: #fff;
+            border: none; /* 셀의 테두리 모두 제거 */
+        }
+        .team-list tbody td.logo{ border-left: none; }
+        .team-list td.count,.team-list th.count{text-align:center}
+        .team-list td.day,.team-list th.day{text-align:center}
+        .team-list td.region,.team-list th.region{text-align:left}
+        .team-list td.name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .team-list td.logo .thumb{width:56px;height:56px;border-radius:8px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;background:#f5f5f5;border:1px solid #eee}
+        .team-list td.logo img{width:100%;height:100%;object-fit:cover;display:block}
+        .team-list .placeholder{font-size:12px;color:#777}
+        .team-list td.action,.team-list th.action{text-align:center}
+        .row-actions{display:flex;justify-content:center;gap:6px;align-items:center}
+        .btn-apply{appearance:none;border:1px solid #0a66c2;background:#0a66c2;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px}
+        .btn-apply:hover{background:#0c63b8}
+        .badge{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid #e5e7eb;background:#f8fafc;color:#374151}
+        .badge-pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+        .badge-full{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+        .badge-own{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+        .badge-done{background:#e8faf0;border-color:#a7f3d0;color:#065f46}
+        .badge-declined{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+        @media (max-width: 720px){
+          .team-list colgroup{display:none}
+          .team-list{table-layout:auto}
+          .team-list th.region,.team-list td.region{display:none}
+        }
+    </style>
+</head>
+<header class="site-header">
+    <div class="topbar">
+        <a href="/" class="logo" aria-label="홈으로">
+            <img src="/download/logo.png" alt="KDT" class="eeung-logo" style="width:50px; height:auto;" />
+        </a>
+        <div class="auth-links">
+            <ul>
+                {{#user}}
+                    <li>
+                        <span>{{nickname}} 님 환영합니다</span>
+                        | <a href="/users/edit">마이페이지</a> |
+                        <a href="/logout">로그아웃</a>
+                    </li>
+                {{/user}}
+                {{^user}}
+                    <li>
+                        <a href="/login">로그인</a> |
+                        <a href="/register">회원가입</a>
+                    </li>
+                {{/user}}
+            </ul>
+        </div>
+    </div>
+    <nav class="sport-nav" aria-label="스포츠 메뉴">
+        <div class="sport-menu">
+            <a href="/community" onclick="openSportWindow('축구'); return false;">커뮤니티</a>
+            <a href="/teams/home" onclick="openSportWindow('풋살'); return false;">동호회</a>
+            <a href="/match/list" onclick="openSportWindow('야구'); return false;">팀매치</a>
+            <a href="/mypost" onclick="openSportWindow('테니스'); return false;">내소개</a>
+        </div>
+    </nav>
+</header>
+<div class="team-page" style="max-width: 960px; margin: 0 auto;">
+    <style>
+        .btn {
+            appearance: none;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .team-list{width:100%;border-collapse:collapse;table-layout:fixed}
+        .team-list th,.team-list td{padding:10px 12px;border-bottom:1px solid #eee;vertical-align:middle}
+        /* ✅ 수정된 부분: 테이블 헤더 스타일 */
+        .team-list thead{
+            background-color: #007bff; /* 헤더 전체에 파란색 배경 적용 */
+        }
+        .team-list thead th{
+            font-weight:700;
+            text-align:left;
+            color: #fff;
+            border: none; /* 셀의 테두리 모두 제거 */
+        }
+        .team-list tbody td.logo{ border-left: none; }
+        .team-list td.count,.team-list th.count{text-align:center}
+        .team-list td.day,.team-list th.day{text-align:center}
+        .team-list td.region,.team-list th.region{text-align:left}
+        .team-list td.name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .team-list td.logo .thumb{width:56px;height:56px;border-radius:8px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;background:#f5f5f5;border:1px solid #eee}
+        .team-list td.logo img{width:100%;height:100%;object-fit:cover;display:block}
+        .team-list .placeholder{font-size:12px;color:#777}
+        .team-list td.action,.team-list th.action{text-align:center}
+        .row-actions{display:flex;justify-content:center;gap:6px;align-items:center}
+        .btn-apply{appearance:none;border:1px solid #0a66c2;background:#0a66c2;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px}
+        .btn-apply:hover{background:#0c63b8}
+        .badge{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid #e5e7eb;background:#f8fafc;color:#374151}
+        .badge-pending{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+        .badge-full{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+        .badge-own{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+        .badge-done{background:#e8faf0;border-color:#a7f3d0;color:#065f46}
+        .badge-declined{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+        @media (max-width: 720px){
+          .team-list colgroup{display:none}
+          .team-list{table-layout:auto}
+          .team-list th.region,.team-list td.region{display:none}
+        }
+    </style>
+    <div class="topbar" style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 16px;">
+        <button type="button" class="btn" onclick="window.location.href='/teams/new'">팀 등록하기</button>
+        <button type="button" class="btn" onclick="window.location.href='/main'">홈화면</button>
+    </div>
+    <table class="team-list">
+        <colgroup>
+            <col style="width:110px">
+            <col style="width:auto">
+            <col style="width:120px">
+            <col style="width:220px">
+            <col style="width:120px">
+            <col style="width:140px">
+        </colgroup>
+        <thead>
+        <tr>
+            <th class="logo">팀로고</th>
+            <th class="name">팀 이름</th>
+            <th class="count">인원수</th>
+            <th class="region">지역</th>
+            <th class="day">주 경기 요일</th>
+            <th class="action">신청</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#teams}}
+            <tr>
+                <td class="logo">
+                    <div class="thumb" aria-label="팀 로고">
+                        {{#image}}
+                            <img src="{{image}}" alt="{{teamName}} 로고" loading="lazy" referrerpolicy="no-referrer">
+                        {{/image}}
+                        {{^image}}
+                            <span class="placeholder">로고 없음</span>
+                        {{/image}}
+                    </div>
+                </td>
+                <td class="name">
+                    <a href="/teams/{{teamId}}" style="text-decoration:none;" title="{{teamName}} 상세 보기">{{teamName}}</a>
+                    {{#captainNickname}}
+                        <div style="font-size:12px;color:#777;margin-top:2px;">캡틴: {{captainNickname}}</div>
+                    {{/captainNickname}}
+                </td>
+                <td class="count">{{currentMembers}} / {{maxMembers}}</td>
+                <td class="region">{{regionName}}</td>
+                <td class="day">{{gameDayLabel}}</td>
+                <td class="action">
+                    <div class="row-actions">
+                        {{#isCaptain}}
+                            <span class="badge badge-own">내 팀</span>
+                        {{/isCaptain}}
+                        {{^isCaptain}}
+                            {{#isPending}}
+                                <span class="badge badge-pending">신청중</span>
+                            {{/isPending}}
+                            {{#isMember}}
+                                <span class="badge badge-done">신청완료</span>
+                            {{/isMember}}
+                            {{#isDeclined}}
+                                <span class="badge badge-declined">신청거절</span>
+                            {{/isDeclined}}
+                            {{^isPending}}
+                                {{^isMember}}
+                                    {{^isDeclined}}
+                                        {{#isFull}}
+                                            <span class="badge badge-full">정원마감</span>
+                                        {{/isFull}}
+                                        {{^isFull}}
+                                            {{#canApply}}
+                                                <form action="/teams/{{teamId}}/apply" method="post" style="margin:0">
+                                                    <button type="submit" class="btn-apply">신청하기</button>
+                                                </form>
+                                            {{/canApply}}
+                                        {{/isFull}}
+                                    {{/isDeclined}}
+                                {{/isMember}}
+                            {{/isPending}}
+                        {{/isCaptain}}
+                    </div>
+                </td>
+            </tr>
+        {{/teams}}
+        {{^teams}}
+            <tr><td colspan="6" style="text-align:center;color:#666;padding:24px 0;">등록된 팀이 없습니다.</td></tr>
+        {{/teams}}
+        </tbody>
+    </table>
+    {{#myTeams}}
+        <div id="captain-panel-{{teamId}}" class="my-requests" style="margin:16px 0;padding:12px;border:1px solid #e5e7eb;border-radius:12px;background:#fafafa">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <h3 style="margin:0;font-size:16px">
+                    내 팀 신청 관리 — <span style="color:#0a66c2">{{teamName}}</span>
+                    {{#pendingCount}} <span class="badge badge-pending" style="margin-left:6px">대기 {{pendingCount}}</span>{{/pendingCount}}
+                </h3>
+                <a href="/teams/{{teamId}}" style="font-size:12px;text-decoration:none">팀 상세</a>
+            </div>
+            {{#applications}}
+                <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:10px;padding:10px;border:1px solid #eee;border-radius:10px;background:#fff">
+                    <div style="display:flex;gap:10px;align-items:center;min-width:0">
+                        <div class="badge" style="white-space:nowrap">{{appliedAt}}</div>
+                        <div style="min-width:0">
+                            <div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{applicantNickname}}</div>
+                            {{#message}}
+                                <div style="font-size:12px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">메시지: {{message}}</div>
+                            {{/message}}
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:center">
+                        <form action="/teams/{{teamId}}/applications/{{applicationId}}/accept" method="post" style="margin:0">
+                            <button type="submit" class="btn-apply" style="background:#16a34a;border-color:#16a34a">수락</button>
+                        </form>
+                        <form action="/teams/{{teamId}}/applications/{{applicationId}}/decline" method="post" style="margin:0">
+                            <button type="submit" class="btn-apply" style="background:#991b1b;border-color:#991b1b">거절</button>
+                        </form>
+                    </div>
+                </div>
+            {{/applications}}
+            {{^applications}}
+                <div style="margin-top:10px;color:#666">대기중인 신청이 없습니다.</div>
+            {{/applications}}
+        </div>
+    {{/myTeams}}
+</div>
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-row">
+            <span class="logo sm">
+                <svg class="eeung-logo" viewBox="0 0 240 80" role="img" aria-label="이응 EEUNG 로고">
+                    <circle cx="40" cy="40" r="22" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" />
+                    <circle cx="28" cy="20" r="6" fill="currentColor" />
+                    <text x="80" y="50"
+                          font-family="Pretendard, 'Noto Sans KR', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif"
+                          font-weight="700" font-size="28" fill="currentColor" letter-spacing="1">[ 이응 ]</text>
+                </svg>
+            </span>
+            <strong>이응(EEUNG)</strong>
+        </div>
+        <div class="footer-row">
+            041-123-4567 | <a href="mailto:contact@eeung-sports.com">contact@eeung-sports.com</a>
+            | 충남 천안시 동남구 백석대학로 1 (백석대 스포츠센터 3층)
+        </div>
+        <div class="footer-row sns">
+            SNS:
+            <a href="#">Instagram</a>
+            <a href="#">Facebook</a>
+            <a href="#">YouTube</a>
+            <span>| © 2025 EEUNG. All rights reserved.</span>
+        </div>
+    </div>
+</footer>

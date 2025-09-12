@@ -1,14 +1,9 @@
 package com.example.KDT.controller;
 
-import com.example.KDT.entity.Post;
-import com.example.KDT.entity.User;
-import com.example.KDT.repository.PostRepository;
-import com.example.KDT.repository.UserRepository;
+import com.example.KDT.entity.*;
+import com.example.KDT.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -21,36 +16,60 @@ public class TestController {
 
     @Autowired
     private UserRepository userRepository;
-
+    
     @Autowired
     private PostRepository postRepository;
-
-    @GetMapping("/count")
-    public Map<String, Object> getCounts() {
-        Map<String, Object> result = new HashMap<>();
-        
-        try {
-            long userCount = userRepository.count();
-            long postCount = postRepository.count();
-            
-            result.put("userCount", userCount);
-            result.put("postCount", postCount);
-            result.put("success", true);
-            
-        } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", e.getMessage());
-        }
-        
-        return result;
-    }
+    
+    @Autowired
+    private PostCategoryRepository postCategoryRepository;
+    
+    @Autowired
+    private SportRepository sportRepository;
+    
+    @Autowired
+    private VenueRepository venueRepository;
 
     @PostMapping("/create-dummy")
     public Map<String, Object> createDummyData() {
         Map<String, Object> result = new HashMap<>();
         
         try {
-            // 간단한 더미 게시글 생성
+            // 스포츠 생성
+            Sport soccer = new Sport();
+            soccer.setSportName("축구");
+            soccer.setSportCode("SOCCER");
+            soccer.setDescription("축구 관련 카테고리");
+            soccer.setCreatedAt(LocalDateTime.now());
+            sportRepository.save(soccer);
+            
+            // 지역 정보는 직접 설정 (Region 엔티티가 없는 경우)
+            // Region seoul = new Region();
+            // seoul.setRegionName("서울");
+            // seoul.setRegionCode("SEOUL");
+            // seoul.setDescription("서울 지역");
+            // seoul.setCreatedAt(LocalDateTime.now());
+            // regionRepository.save(seoul);
+            
+            // 경기장 생성 (Region 없이)
+            Venue venue = new Venue();
+            venue.setVenueName("올림픽공원 축구장");
+            venue.setAddress("서울 송파구 올림픽로 25");
+            // venue.setRegion(seoul); // Region이 없으므로 주석 처리
+            venue.setSport(soccer);
+            // venue.setCapacity(1000); // capacity 필드가 없으므로 제거
+            // venue.setIsActive(true); // isActive 필드가 없으므로 제거
+            venue.setCreatedAt(LocalDateTime.now());
+            venueRepository.save(venue);
+            
+            // 게시글 카테고리 생성
+            PostCategory category = new PostCategory();
+            category.setCategoryName("자유게시판");
+            category.setCategoryType("FREE");
+            category.setSport(soccer);
+            category.setCreatedAt(LocalDateTime.now());
+            postCategoryRepository.save(category);
+            
+            // 게시글 생성
             Post post = new Post();
             post.setTitle("테스트 게시글");
             post.setContent("이것은 테스트 게시글입니다.");
@@ -101,7 +120,7 @@ public class TestController {
             user.setRealName("테스트");
             user.setPhone("010-0000-0000");
             user.setBirthYear(1990);
-            user.setGender("male");
+            user.setGender(User.Gender.male);
             user.setIsActive(true);
             user.setIsAdmin(false);
             user.setCreatedAt(LocalDateTime.now());

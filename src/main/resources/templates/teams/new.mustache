@@ -1,0 +1,346 @@
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>동호회</title>
+    <style>
+        :root { --maxw: 1200px; }
+        .logo{ display:inline-flex; align-items:center; color:#111; text-decoration:none; }
+        .logo .eeung-logo{ width:150px; height:auto; display:block; }
+        .logo.sm .eeung-logo{ width:120px; }
+        .logo.lg .eeung-logo{ width:180px; }
+        .site-header{ background:#e9f2ff; border-bottom:1px solid #cfe0ff; }
+        .topbar{
+            max-width:var(--maxw); margin:0 auto; height:60px;
+            display:flex; align-items:center; justify-content:space-between; padding:0 20px;
+        }
+        .auth-links a{ margin-left:10px; text-decoration:none; color:#111; }
+        .auth-links .sep{ color:#c3c3c3; margin:0 6px; }
+        .sport-nav{ background:#fff; border-top:1px solid #e5eefc; }
+        .sport-menu{ max-width:var(--maxw); margin:0 auto; display:flex; gap:20px; padding:12px 20px; }
+        .sport-menu a{ text-decoration:none; color:#007bff; font-weight:bold; }
+        /* ===== Base ===== */
+        :root { --maxw: 1200px; }
+        *{box-sizing:border-box}
+        body{ margin:0; font-family:Arial, sans-serif; background:#f7f7f7; color:#111;}
+        /* ===== Logo (uses currentColor) ===== */
+        .logo{ display:inline-flex; align-items:center; color:#111; text-decoration:none; }
+        .logo .eeung-logo{ width:150px; height:auto; display:block; }
+        .logo.sm .eeung-logo{ width:120px; }
+        .logo.lg .eeung-logo{ width:180px; }
+        /* ===== Header ===== */
+        .site-header{ background:#e9f2ff; border-bottom:1px solid #cfe0ff; }
+        .topbar{ max-width:var(--maxw); margin:0 auto; height:60px;
+        display:flex; align-items:center; justify-content:space-between; padding:0 20px; }
+        .auth-links a{ margin-left:10px; text-decoration:none; color:#111; }
+        .auth-links .sep{ color:#c3c3c3; margin:0 6px; }
+        .sport-nav{ background:#fff; border-top:1px solid #e5eefc; }
+        .sport-menu{ max-width:var(--maxw); margin:0 auto; display:flex; gap:20px; padding:12px 20px; }
+        .sport-menu a{ text-decoration:none; color:#007bff; font-weight:bold; }
+        /* ===== Footer ===== */
+        .site-footer{ margin-top:40px; background:#e5e7eb; border-top:1px solid #d1d5db; }
+        .footer-inner{ max-width:var(--maxw); margin:0 auto; padding:16px 20px; color:#111827; font-size:14px; }
+        .footer-row{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:6px; }
+        .sns a{ color:#111827; text-decoration:underline; margin-right:10px; }
+
+        /* new.mustache에 있던 스타일을 아래에 추가하여 병합합니다. */
+        .team-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, .04);
+        }
+
+        .title {
+            margin: 0 0 14px;
+            font-size: 22px;
+            color: #0f172a;
+        }
+
+        .form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .req {
+            color: #e11d48;
+            font-weight: 700;
+        }
+
+        .input, .textarea, .segmented {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+        }
+
+        .input:focus, .textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, .1);
+        }
+
+        select.input {
+            padding-right: 32px;
+        }
+
+        .textarea {
+            resize: vertical;
+        }
+
+        .segmented {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            background: #fbfbfb;
+        }
+
+        .chip {
+            position: relative;
+        }
+
+        .chip input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .chip span {
+            display: inline-block;
+            border: 1px solid #e5e7eb;
+            border-radius: 999px;
+            padding: 10px 14px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #fff;
+            cursor: pointer;
+            transition: .15s ease;
+        }
+
+        .chip input:checked + span {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+        }
+
+        .chip span:hover {
+            transform: translateY(-1px);
+        }
+
+        .preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .preview img {
+            width: 72px;
+            height: 72px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid #e5e7eb;
+        }
+
+        #previewHint {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .btn {
+            appearance: none;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        @media (max-width: 720px) {
+            .form {
+                grid-template-columns: 1fr;
+            }
+            .actions {
+                justify-content: stretch;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<header class="site-header">
+    <div class="topbar">
+        <a href="/" class="logo" aria-label="홈으로">
+            <img src="/download/logo.png" alt="KDT" class="eeung-logo" style="width:50px; height:auto;" />
+        </a>
+        <div class="auth-links">
+            <ul>
+                {{#user}}
+                    <li>
+                        <span>{{nickname}} 님 환영합니다</span>
+                        | <a href="/users/edit">마이페이지</a> |
+                        <a href="/logout">로그아웃</a>
+                    </li>
+                {{/user}}
+                {{^user}}
+                    <li>
+                        <a href="/login">로그인</a> |
+                        <a href="/register">회원가입</a>
+                    </li>
+                {{/user}}
+            </ul>
+        </div>
+    </div>
+    <nav class="sport-nav" aria-label="스포츠 메뉴">
+        <div class="sport-menu">
+            <a href="/community" onclick="openSportWindow('축구'); return false;">커뮤니티</a>
+            <a href="/teams/home" onclick="openSportWindow('풋살'); return false;">동호회</a>
+            <a href="/match/list" onclick="openSportWindow('야구'); return false;">팀매치</a>
+            <a href="/mypost" onclick="openSportWindow('테니스'); return false;">내소개</a>
+        </div>
+    </nav>
+</header>
+
+<div class="team-container">
+    <div class="topbar">
+        <a class="btn" href="/teams/home">← 팀 목록으로 돌아가기</a>
+        <a class="btn" href="/main">홈화면</a>
+    </div>
+
+    <div class="card">
+        <h2 class="title">팀 등록하기</h2>
+
+        <form action="/teams/save" method="post" enctype="multipart/form-data" class="form">
+            <div class="field">
+                <label class="label">종목 <span class="req">*</span></label>
+                <select name="sportId" required class="input">
+                    <option value="">종목 선택</option>
+                    {{#sports}}
+                        <option value="{{sportId}}">{{sportName}}</option>
+                    {{/sports}}
+                </select>
+            </div>
+
+            <div class="field">
+                <label class="label">팀 이름 <span class="req">*</span></label>
+                <input type="text" name="teamName" required class="input" placeholder="예) 천안 위너스">
+            </div>
+
+            <div class="field">
+                <label class="label">최대 인원 <span class="req">*</span></label>
+                <input type="number" name="maxMembers" min="1" required class="input" placeholder="예) 20">
+            </div>
+            <div class="field">
+                <label class="label">현재 인원</label>
+                <input type="number" name="currentMembers" min="0" value="0" class="input">
+            </div>
+
+            <div class="field full">
+                <label class="label">지역 <span class="req">*</span></label>
+                <div class="segmented">
+                    <label class="chip">
+                        <input type="radio" name="regionName" value="천안시 동남구" required>
+                        <span>천안시 동남구</span>
+                    </label>
+                    <label class="chip">
+                        <input type="radio" name="regionName" value="천안시 서북구" required>
+                        <span>천안시 서북구</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">주 경기 요일 <span class="req">*</span></label>
+                <select name="gameDay" required class="input">
+                    <option value="">선택</option>
+                    <option value="mon">월</option>
+                    <option value="tue">화</option>
+                    <option value="wed">수</option>
+                    <option value="thu">목</option>
+                    <option value="fri">금</option>
+                    <option value="sat">토</option>
+                    <option value="sun">일</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label class="label">팀 로고</label>
+                <input type="file" name="imageFile" accept="image/*">
+            </div>
+
+            <div class="field full">
+                <label class="label">소개</label>
+                <textarea name="teamDescription" rows="5" class="textarea" placeholder="팀 소개를 입력하세요"></textarea>
+            </div>
+
+            <div class="actions full">
+                <button type="submit" class="btn primary" align="center">등록하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-row">
+            <span class="logo sm">
+                <svg class="eeung-logo" viewBox="0 0 240 80" role="img" aria-label="이응 EEUNG 로고">
+                    <circle cx="40" cy="40" r="22" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" />
+                    <circle cx="28" cy="20" r="6" fill="currentColor" />
+                    <text x="80" y="50"
+                          font-family="Pretendard, 'Noto Sans KR', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif"
+                          font-weight="700" font-size="28" fill="currentColor" letter-spacing="1">[ 이응 ]</text>
+                </svg>
+            </span>
+            <strong>이응(EEUNG)</strong>
+        </div>
+        <div class="footer-row">
+            041-123-4567 | <a href="mailto:contact@eeung-sports.com">contact@eeung-sports.com</a>
+            | 충남 천안시 동남구 백석대학로 1 (백석대 스포츠센터 3층)
+        </div>
+        <div class="footer-row sns">
+            SNS:
+            <a href="#">Instagram</a>
+            <a href="#">Facebook</a>
+            <a href="#">YouTube</a>
+            <span>| © 2025 EEUNG. All rights reserved.</span>
+        </div>
+    </div>
+</footer>

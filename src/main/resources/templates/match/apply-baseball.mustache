@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>야구 매치 신청</title>
+    <style>
+        :root {
+            --pitch-max-w: 900px;
+            --line: rgba(255,255,255,.85);
+            --grass1: #2d5a2d;
+            --grass2: #1e4a1e;
+            --dirt: #b88453;
+            --dirt2: #9a6e43;
+            --dirtDark: #8a5c35;
+        }
+
+        /* 기본: 화이트 배경 + 다크 글자 */
+        body { margin:0; background:#ffffff; color:#111; font-family:system-ui, sans-serif; }
+
+        /* 수정된 헤더 스타일 */
+        .header {
+            background: #ffcccc; /* 연한 빨간색 배경 */
+            color: #c00; /* 짙은 빨간색 글씨 */
+            padding: 20px clamp(16px, 4vw, 40px);
+            display: flex;
+            justify-content: center; /* h2를 가운데로 정렬 */
+            align-items: center;
+            border-bottom: 2px solid #ff9999;
+            position: relative; /* 자식 요소의 absolute 위치 기준 */
+        }
+        .header h2 {
+            margin: 0;
+            font-weight: 800;
+        }
+        .btn-list {
+            background: #ff6666;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            position: absolute; /* header 내에서 독립적으로 위치 */
+            right: clamp(16px, 4vw, 40px); /* 오른쪽 끝에 위치 */
+        }
+        .btn-list:hover {
+            background: #e65c5c;
+        }
+
+        .field {
+            position: relative;
+            width: min(95vw, var(--pitch-max-w));
+            height: min(95vw, var(--pitch-max-w));
+            margin: 0 auto 24px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: var(--grass1);
+            box-shadow: 0 20px 50px rgba(0,0,0,.15), inset 0 0 0 2px #0a1b0a;
+        }
+
+        /* 잔디 패턴 */
+        .grass-pattern {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg, var(--grass1) 0%, var(--grass1) 8%, var(--grass2) 8%, var(--grass2) 16%);
+        }
+
+        /* 내야 흙 다이아몬드 */
+        .infield-dirt {
+            position: absolute;
+            left: 50%;
+            bottom: 15%;
+            width: 50%;
+            height: 50%;
+            background: var(--dirt);
+            transform: translateX(-50%) rotate(45deg);
+            border-radius: 8px;
+            box-shadow: inset 0 0 0 3px var(--dirtDark);
+        }
+
+        /* 베이스 */
+        .base {
+            position: absolute;
+            width: 3%;
+            height: 3%;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 2px;
+            transform: rotate(-45deg);
+        }
+        .first-base { left: 80%; top: 58%; }
+        .second-base { left: 50%; top: 30%; transform: translate(-50%, -50%) rotate(-45deg); }
+        .third-base { left: 16%; top: 58%; }
+
+        /* 홈플레이트 */
+        .home-plate {
+            position: absolute;
+            left: 50%;
+            bottom: 6%;
+            width: 4%;
+            height: 4%;
+            background: #fff;
+            transform: translateX(-50%) rotate(180deg);
+            clip-path: polygon(50% 0%, 0% 55%, 0% 100%, 100% 100%, 100% 55%);
+        }
+
+        /* 투수 마운드 */
+        .mound {
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            width: 6%;
+            height: 6%;
+            border-radius: 50%;
+            background: var(--dirt);
+            transform: translate(-50%, -50%);
+            box-shadow: inset 0 0 0 3px var(--dirtDark);
+        }
+
+        /* 파울 라인 */
+        .foul-line {
+            position: absolute;
+            left: 50%;
+            bottom: 15%;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+        .foul-line::before, .foul-line::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 2px solid rgba(255,255,255,.3);
+        }
+        .foul-line::before {
+            left: -50%;
+            bottom: 0;
+            border-right: 0;
+            border-top: 0;
+            width: 50%;
+            height: 85%;
+        }
+        .foul-line::after {
+            right: -50%;
+            bottom: 0;
+            border-left: 0;
+            border-top: 0;
+            width: 50%;
+            height: 85%;
+        }
+
+        /* 선수 포지션 */
+        .player {
+            --x: 50; --y: 50;
+            position: absolute;
+            left: calc(var(--x) * 1%);
+            top: calc(var(--y) * 1%);
+            transform: translate(-50%, -62%);
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .avatar {
+            width: clamp(36px, 4.5vw, 56px);
+            height: clamp(36px, 4.5vw, 56px);
+            border-radius: 50%;
+            background: rgba(0,0,0,.75);
+            border: 2px solid rgba(255,255,255,.7);
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-weight: 800;
+            backdrop-filter: blur(2px);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .player:hover .avatar {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(0,0,0,.25);
+        }
+        .badge-pos {
+            right: -6px;
+            top: -6px;
+            font: 700 11px/1 system-ui;
+            color: #fff;
+            background: #dc3545;
+            padding: 2px 7px;
+            border-radius: 999px;
+            border: 1px solid #ff9ec0;
+        }
+        .name {
+            display: none;
+            margin-top: 6px;
+            padding: 2px 8px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff;
+            background: rgba(0,0,0,.45);
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+        .player.show .name { display: inline-block; }
+        .player.selected .avatar { outline: 3px solid #ffc107; }
+
+        .player.occupied { background: #28a745; border-color: #20c997; }
+        .player .avatar { font-size: 0.8em; font-weight: bold; color: #fff; line-height: 1; }
+        .player .badge-pos {
+            position: absolute;
+            top: -8px; right: -8px;
+            background: #dc3545; color: #fff;
+            font-size: 0.6em; font-weight: bold;
+            padding: 2px 4px; border-radius: 8px;
+            border: 1px solid #fff; min-width: 16px; text-align: center;
+        }
+        .player .name {
+            position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); color: #fff; padding: 4px 8px; border-radius: 4px;
+            font-size: 0.7em; white-space: nowrap; opacity: 0; transition: opacity 0.3s ease;
+            pointer-events: none; z-index: 10;
+        }
+        .player.show .name, .player:hover .name { opacity: 1; }
+
+        /* 신청된 포지션 스타일 */
+        .player.occupied .avatar { background: #28a745; border-color: #28a745; }
+        .player.occupied .badge-pos { background: #28a745; }
+
+        /* 신청 폼 스타일 (화이트 배경용) */
+        .application-form {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #111; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            background: #fff;
+            color: #111;
+            font-size: 16px;
+        }
+        .form-group input::placeholder, .form-group select::placeholder { color:#9aa3af; }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #0b5cff;
+            box-shadow: 0 0 0 3px rgba(11,92,255,.15);
+        }
+        .btn-apply {
+            width: 100%;
+            padding: 15px;
+            background: #ffcccc; /* 연한 빨간색 배경 */
+            color: #c00; /* 짙은 빨간색 글씨 (선택 사항) */
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-apply:hover { background: #ff9999; } /* 살짝 더 짙은 연한 빨간색 */
+
+        /* 반응형 레이아웃 */
+        .fields-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            padding: 20px;
+            max-width: 100%;
+        }
+        .field-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .field.home-team,
+        .field.away-team {
+            width: min(85vw, 500px);
+            height: min(85vw, 500px);
+            margin: 0 auto 20px;
+        }
+        @media (max-width: 768px) {
+            .fields-container { flex-direction: column; gap: 15px; padding: 15px; }
+            .field-container { min-width: 100%; max-width: 100%; }
+            .field.home-team, .field.away-team { width: min(92vw, 420px); height: min(92vw, 420px); }
+            h3 { font-size: 14px !important; margin-bottom: 8px !important; }
+        }
+        @media (max-width: 480px) {
+            .fields-container { padding: 10px; }
+            .field.home-team, .field.away-team { width: min(96vw, 380px); height: min(96vw, 380px); }
+        }
+
+        /* ===== 매치 정보 & 참가비: 화면 가로 꽉 채우는 규격 ===== */
+        .match-info,
+        .price-info{
+            width:100vw;                    /* 화면 가로 전체 */
+            max-width:100%;
+            margin:20px 0;                  /* 좌우 마진 제거, 위아래만 여백 */
+            padding:20px clamp(16px, 4vw, 40px);
+            border-radius:0;                /* 풀블리드 느낌 */
+            box-sizing:border-box;          /* padding 포함 */
+        }
+
+        /* 화이트 배경 기준 가독성 보정 */
+        .match-info{
+            background:#f8f9fa;
+            border:1px solid #e5e7eb;
+        }
+        .match-info h3{
+            margin-top: 0;
+            color: #0b5cff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: #666; }
+        .info-value { color: #111; }
+
+        .price-info{
+            background:#ffdddd; /* 연한 빨간색 배경 */
+            border:1px solid #ffaaaa; /* 연한 빨간색 테두리 */
+        }
+        .price-info h4 { margin-top: 0; color: #c00; /* 짙은 빨간색 글씨 */ text-align: center; }
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        @media (min-width: 900px){
+            .price-grid{ grid-template-columns: repeat(6, 1fr); } /* 넓은 화면 한 줄 */
+        }
+        .price-item{
+            text-align: center;
+            padding: 10px;
+            background: #ffebee; /* 조금 더 밝은 연한 빨간색 */
+            border-radius: 6px;
+            border: 1px solid #ffaaaa; /* 연한 빨간색 테두리 */
+        }
+        .price-item .position{ font-weight: 600; color: #c00; margin-bottom: 5px; }
+        .price-item .price{ font-size: 18px; font-weight: 700; color: #111; }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h2>⚾ 야구 매치 신청</h2>
+    <a class="btn-list" href="/match/list" >목록으로</a>
+</header>
+
+<div class="match-info">
+    <h3>매치 정보</h3>
+    <div class="info-row">
+        <span class="info-label">경기장:</span>
+        <span class="info-value">{{venue.venueName}}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">날짜:</span>
+        <span class="info-value">{{matchDate}}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">시간:</span>
+        <span class="info-value">{{startTime}} - {{endTime}}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">참가자:</span>
+        <span class="info-value">{{currentPlayers}}/{{maxPlayers}}명</span>
+    </div>
+</div>
+
+<div class="price-info">
+    <h4>포지션별 참가비</h4>
+    <div class="price-grid">
+        <div class="price-item"><div class="position">투수</div><div class="price">10,000원</div></div>
+        <div class="price-item"><div class="position">포수</div><div class="price">8,000원</div></div>
+        <div class="price-item"><div class="position">내야수</div><div class="price">6,000원</div></div>
+        <div class="price-item"><div class="position">외야수</div><div class="price">5,000원</div></div>
+        <div class="price-item"><div class="position">지명타자</div><div class="price">4,000원</div></div>
+        <div class="price-item"><div class="position">대타</div><div class="price">무료</div></div>
+    </div>
+</div>
+
+<div class="fields-container">
+    <div class="field-container">
+        <h3 style="text-align: center; color: #007bff; margin-bottom: 8px; font-size: 14px;">🏠 홈팀</h3>
+        <div class="field home-team">
+            <div class="grass-pattern"></div>
+            <div class="infield-dirt"></div>
+            <div class="home-plate"></div>
+            <div class="base first-base"></div>
+            <div class="base second-base"></div>
+            <div class="base third-base"></div>
+            <div class="mound"></div>
+            <div class="foul-line"></div>
+
+            <div class="player" style="--x:50; --y:88;" data-name="포수 (C)" data-pos="C" data-position="C">
+                <div class="avatar">C</div>
+                <div class="badge-pos">C</div>
+                <div class="name">{{#positionStatus.C}}{{positionStatus.C}}{{/positionStatus.C}}{{^positionStatus.C}}포수 (C){{/positionStatus.C}}</div>
+            </div>
+
+            <div class="player" style="--x:50; --y:60;" data-name="투수 (P)" data-pos="P" data-position="P">
+                <div class="avatar">P</div>
+                <div class="badge-pos">P</div>
+                <div class="name">{{#positionStatus.P}}{{positionStatus.P}}{{/positionStatus.P}}{{^positionStatus.P}}투수 (P){{/positionStatus.P}}</div>
+            </div>
+
+            <div class="player" style="--x:80; --y:60;" data-name="1루수 (1B)" data-pos="1B" data-position="1B">
+                <div class="avatar">1B</div>
+                <div class="badge-pos">1B</div>
+                <div class="name">{{#positionStatus.1B}}{{positionStatus.1B}}{{/positionStatus.1B}}{{^positionStatus.1B}}1루수 (1B){{/positionStatus.1B}}</div>
+            </div>
+
+            <div class="player" style="--x:68; --y:42;" data-name="2루수 (2B)" data-pos="2B" data-position="2B">
+                <div class="avatar">2B</div>
+                <div class="badge-pos">2B</div>
+                <div class="name">{{#positionStatus.2B}}{{positionStatus.2B}}{{/positionStatus.2B}}{{^positionStatus.2B}}2루수 (2B){{/positionStatus.2B}}</div>
+            </div>
+
+            <div class="player" style="--x:20; --y:60;" data-name="3루수 (3B)" data-pos="3B" data-position="3B">
+                <div class="avatar">3B</div>
+                <div class="badge-pos">3B</div>
+                <div class="name">{{#positionStatus.3B}}{{positionStatus.3B}}{{/positionStatus.3B}}{{^positionStatus.3B}}3루수 (3B){{/positionStatus.3B}}</div>
+            </div>
+
+            <div class="player" style="--x:32; --y:42;" data-name="유격수 (SS)" data-pos="SS" data-position="SS">
+                <div class="avatar">SS</div>
+                <div class="badge-pos">SS</div>
+                <div class="name">{{#positionStatus.SS}}{{positionStatus.SS}}{{/positionStatus.SS}}{{^positionStatus.SS}}유격수 (SS){{/positionStatus.SS}}</div>
+            </div>
+
+            <div class="player" style="--x:15; --y:20;" data-name="좌익수 (LF)" data-pos="LF" data-position="LF">
+                <div class="avatar">LF</div>
+                <div class="badge-pos">LF</div>
+                <div class="name">{{#positionStatus.LF}}{{positionStatus.LF}}{{/positionStatus.LF}}{{^positionStatus.LF}}좌익수 (LF){{/positionStatus.LF}}</div>
+            </div>
+
+            <div class="player" style="--x:50; --y:12;" data-name="중견수 (CF)" data-pos="CF" data-position="CF">
+                <div class="avatar">CF</div>
+                <div class="badge-pos">CF</div>
+                <div class="name">{{#positionStatus.CF}}{{positionStatus.CF}}{{/positionStatus.CF}}{{^positionStatus.CF}}중견수 (CF){{/positionStatus.CF}}</div>
+            </div>
+
+            <div class="player" style="--x:85; --y:20;" data-name="우익수 (RF)" data-pos="RF" data-position="RF">
+                <div class="avatar">RF</div>
+                <div class="badge-pos">RF</div>
+                <div class="name">{{#positionStatus.RF}}{{positionStatus.RF}}{{/positionStatus.RF}}{{^positionStatus.RF}}우익수 (RF){{/positionStatus.RF}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="field-container">
+        <h3 style="text-align: center; color: #dc3545; margin-bottom: 8px; font-size: 14px;">✈️ 원정팀</h3>
+        <div class="field away-team">
+            <div class="grass-pattern"></div>
+            <div class="infield-dirt"></div>
+            <div class="home-plate"></div>
+            <div class="base first-base"></div>
+            <div class="base second-base"></div>
+            <div class="base third-base"></div>
+            <div class="mound"></div>
+            <div class="foul-line"></div>
+
+            <div class="player" style="--x:50; --y:88;" data-name="원정 포수 (C2)" data-pos="C2" data-position="C2">
+                <div class="avatar">C</div>
+                <div class="badge-pos">C</div>
+                <div class="name">{{#positionStatus.C2}}{{positionStatus.C2}}{{/positionStatus.C2}}{{^positionStatus.C2}}원정 포수 (C2){{/positionStatus.C2}}</div>
+            </div>
+
+            <div class="player" style="--x:50; --y:60;" data-name="원정 투수 (P2)" data-pos="P2" data-position="P2">
+                <div class="avatar">P</div>
+                <div class="badge-pos">P</div>
+                <div class="name">{{#positionStatus.P2}}{{positionStatus.P2}}{{/positionStatus.P2}}{{^positionStatus.P2}}원정 투수 (P2){{/positionStatus.P2}}</div>
+            </div>
+
+            <div class="player" style="--x:80; --y:60;" data-name="원정 1루수 (1B2)" data-pos="1B2" data-position="1B2">
+                <div class="avatar">1B</div>
+                <div class="badge-pos">1B</div>
+                <div class="name">{{#positionStatus.1B2}}{{positionStatus.1B2}}{{/positionStatus.1B2}}{{^positionStatus.1B2}}원정 1루수 (1B2){{/positionStatus.1B2}}</div>
+            </div>
+
+            <div class="player" style="--x:68; --y:42;" data-name="원정 2루수 (2B2)" data-pos="2B2" data-position="2B2">
+                <div class="avatar">2B</div>
+                <div class="badge-pos">2B</div>
+                <div class="name">{{#positionStatus.2B2}}{{positionStatus.2B2}}{{/positionStatus.2B2}}{{^positionStatus.2B2}}원정 2루수 (2B2){{/positionStatus.2B2}}</div>
+            </div>
+
+            <div class="player" style="--x:20; --y:60;" data-name="원정 3루수 (3B2)" data-pos="3B2" data-position="3B2">
+                <div class="avatar">3B</div>
+                <div class="badge-pos">3B</div>
+                <div class="name">{{#positionStatus.3B2}}{{positionStatus.3B2}}{{/positionStatus.3B2}}{{^positionStatus.3B2}}원정 3루수 (3B2){{/positionStatus.3B2}}</div>
+            </div>
+
+            <div class="player" style="--x:32; --y:42;" data-name="원정 유격수 (SS2)" data-pos="SS2" data-position="SS2">
+                <div class="avatar">SS</div>
+                <div class="badge-pos">SS</div>
+                <div class="name">{{#positionStatus.SS2}}{{positionStatus.SS2}}{{/positionStatus.SS2}}{{^positionStatus.SS2}}원정 유격수 (SS2){{/positionStatus.SS2}}</div>
+            </div>
+
+            <div class="player" style="--x:15; --y:20;" data-name="원정 좌익수 (LF2)" data-pos="LF2" data-position="LF2">
+                <div class="avatar">LF</div>
+                <div class="badge-pos">LF</div>
+                <div class="name">{{#positionStatus.LF2}}{{positionStatus.LF2}}{{/positionStatus.LF2}}{{^positionStatus.LF2}}원정 좌익수 (LF2){{/positionStatus.LF2}}</div>
+            </div>
+
+            <div class="player" style="--x:50; --y:12;" data-name="원정 중견수 (CF2)" data-pos="CF2" data-position="CF2">
+                <div class="avatar">CF</div>
+                <div class="badge-pos">CF</div>
+                <div class="name">{{#positionStatus.CF2}}{{positionStatus.CF2}}{{/positionStatus.CF2}}{{^positionStatus.CF2}}원정 중견수 (CF2){{/positionStatus.CF2}}</div>
+            </div>
+
+            <div class="player" style="--x:85; --y:20;" data-name="원정 우익수 (RF2)" data-pos="RF2" data-position="RF2">
+                <div class="avatar">RF</div>
+                <div class="badge-pos">RF</div>
+                <div class="name">{{#positionStatus.RF2}}{{positionStatus.RF2}}{{/positionStatus.RF2}}{{^positionStatus.RF2}}원정 우익수 (RF2){{/positionStatus.RF2}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="application-form">
+    <h3>포지션 신청</h3>
+    <form action="/match/{{matchId}}/apply" method="post">
+        <div class="form-group">
+            <label for="position">희망 포지션</label>
+            <select id="position" name="position" required>
+                <option value="">포지션을 선택하세요</option>
+                <optgroup label="🏠 홈팀">
+                    <option value="P" data-price="15000">홈팀 투수 (P) - 15,000원</option>
+                    <option value="C" data-price="12000">홈팀 포수 (C) - 12,000원</option>
+                    <option value="1B" data-price="10000">홈팀 1루수 (1B) - 10,000원</option>
+                    <option value="2B" data-price="10000">홈팀 2루수 (2B) - 10,000원</option>
+                    <option value="3B" data-price="10000">홈팀 3루수 (3B) - 10,000원</option>
+                    <option value="SS" data-price="12000">홈팀 유격수 (SS) - 12,000원</option>
+                    <option value="LF" data-price="8000">홈팀 좌익수 (LF) - 8,000원</option>
+                    <option value="CF" data-price="10000">홈팀 중견수 (CF) - 10,000원</option>
+                    <option value="RF" data-price="8000">홈팀 우익수 (RF) - 8,000원</option>
+                </optgroup>
+                <optgroup label="✈️ 원정팀">
+                    <option value="P2" data-price="15000">원정팀 투수 (P2) - 15,000원</option>
+                    <option value="C2" data-price="12000">원정팀 포수 (C2) - 12,000원</option>
+                    <option value="1B2" data-price="10000">원정팀 1루수 (1B2) - 10,000원</option>
+                    <option value="2B2" data-price="10000">원정팀 2루수 (2B2) - 10,000원</option>
+                    <option value="3B2" data-price="10000">원정팀 3루수 (3B2) - 10,000원</option>
+                    <option value="SS2" data-price="12000">원정팀 유격수 (SS2) - 12,000원</option>
+                    <option value="LF2" data-price="8000">원정팀 좌익수 (LF2) - 8,000원</option>
+                    <option value="CF2" data-price="10000">원정팀 중견수 (CF2) - 10,000원</option>
+                    <option value="RF2" data-price="8000">원정팀 우익수 (RF2) - 8,000원</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="price">참가비 (원)</label>
+            <input type="number" id="price" name="price" min="0" step="1000" required>
+        </div>
+        <button type="submit" class="btn-apply">매치 신청하기</button>
+    </form>
+</div>
+
+<script>
+    // 이름 라벨 토글
+    document.querySelectorAll('.player').forEach(p => {
+        const nameEl = p.querySelector('.name');
+        nameEl.textContent = p.dataset.name;
+        p.addEventListener('click', () => p.classList.toggle('show'));
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const positionSelect = document.getElementById('position');
+
+        // positionStatus 데이터를 기반으로 occupied 포지션 처리
+        const positionStatus = {
+            P: '{{positionStatus.P}}',
+            C: '{{positionStatus.C}}',
+            '1B': '{{positionStatus.1B}}',
+            '2B': '{{positionStatus.2B}}',
+            '3B': '{{positionStatus.3B}}',
+            SS: '{{positionStatus.SS}}',
+            LF: '{{positionStatus.LF}}',
+            CF: '{{positionStatus.CF}}',
+            RF: '{{positionStatus.RF}}',
+            P2: '{{positionStatus.P2}}',
+            C2: '{{positionStatus.C2}}',
+            '1B2': '{{positionStatus.1B2}}',
+            '2B2': '{{positionStatus.2B2}}',
+            '3B2': '{{positionStatus.3B2}}',
+            SS2: '{{positionStatus.SS2}}',
+            LF2: '{{positionStatus.LF2}}',
+            CF2: '{{positionStatus.CF2}}',
+            RF2: '{{positionStatus.RF2}}'
+        };
+
+        // 신청된 포지션 표시 + occupied
+        document.querySelectorAll('.player').forEach(p => {
+            const positionKey = p.dataset.position;
+            const nameEl = p.querySelector('.name');
+
+            if (positionStatus[positionKey] && positionStatus[positionKey].trim() !== '') {
+                nameEl.textContent = positionStatus[positionKey];
+                nameEl.style.color = '#00aa00';
+                p.classList.add('occupied');
+            } else {
+                nameEl.textContent = p.dataset.name;
+            }
+        });
+
+        // 신청된 포지션 옵션 비활성화
+        const occupiedPositions = [];
+        document.querySelectorAll('.player.occupied').forEach(p => {
+            occupiedPositions.push(p.dataset.pos);
+        });
+        Array.from(positionSelect.options).forEach(option => {
+            if (occupiedPositions.includes(option.value)) {
+                option.disabled = true;
+                if (!/마감/.test(option.textContent)) option.textContent += ' (마감)';
+            }
+        });
+
+        // 포지션 선택 시 가격 자동 입력
+        positionSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const priceInput = document.getElementById('price');
+            priceInput.value = selectedOption.value ? selectedOption.getAttribute('data-price') : '';
+        });
+    });
+</script>
+</body>
+</html>

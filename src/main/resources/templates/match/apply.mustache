@@ -2,316 +2,299 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>매치 신청 - {{venue.venueName}} - KDT</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>매치 신청</title>
     <style>
-        .venue-preview {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 8px;
-        }
-        .form-section {
-            background-color: #f8f9fa;
-            border-radius: 8px;
+        body { 
+            margin:0; 
+            background:#1c1f22; 
+            color:#fff; 
+            font-family:system-ui, sans-serif; 
             padding: 20px;
+        }
+        h2 { text-align:center; margin:18px 0; font-weight:800; }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 매치 정보 스타일 */
+        .match-info {
+            background: rgba(255,255,255,.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,.1);
+        }
+        .match-info h3 {
+            margin-top: 0;
+            color: #0d6efd;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+        .info-label {
+            font-weight: 600;
+            color: #ccc;
+        }
+        .info-value {
+            color: #fff;
+        }
+
+        /* 신청 폼 스타일 */
+        .application-form {
+            background: rgba(255,255,255,.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,.1);
+        }
+        .form-group {
             margin-bottom: 20px;
         }
-        .price-input {
-            font-size: 1.2rem;
-            font-weight: bold;
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #fff;
         }
-        .position-option {
-            border: 2px solid #e9ecef;
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,.2);
             border-radius: 8px;
+            background: rgba(255,255,255,.1);
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+        }
+        .btn-apply {
+            width: 100%;
             padding: 15px;
-            margin: 10px 0;
+            background: #0d6efd;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background-color 0.2s;
         }
-        .position-option:hover {
-            border-color: #007bff;
-            background-color: #f8f9fa;
+        .btn-apply:hover {
+            background: #0b5ed7;
         }
-        .position-option.selected {
-            border-color: #007bff;
-            background-color: #e7f3ff;
+
+        .btn-cancel {
+            width: 100%;
+            padding: 15px;
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
         }
+        .btn-cancel:hover {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 15px;
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* 스포츠 아이콘 */
+        .sport-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* 알림 메시지 */
+        .notice {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* 신청 상태 표시 */
+        .application-status {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* 디버깅용 스타일 */
+        .debug-info {
+            background: rgba(0, 123, 255, 0.1);
+            border: 1px solid rgba(0, 123, 255, 0.3);
+            color: #007bff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <!-- 헤더 -->
-                <div class="text-center mb-4">
-                    <h2><i class="fas fa-plus-circle text-success"></i> 매치 신청</h2>
-                    <p class="text-muted">{{venue.venueName}} {{sport.sportName}} 매치에 참여 신청합니다</p>
-                </div>
+<div class="container">
+    <h2>{{match.sport.sportName}} 매치 신청</h2>
 
-                <!-- 매치 정보 요약 -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="venue-preview" style="background-image: url('{{#venue.venueImage}}{{venue.venueImage}}{{/venue.venueImage}}{{^venue.venueImage}}data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f8f9fa'/%3E%3Ctext x='200' y='100' text-anchor='middle' font-size='24' fill='%236c757d'%3E%3Ci class='fas fa-map-marker-alt'%3E%3C/i%3E%3C/text%3E%3C/svg%3E{{/venue.venueImage}}')"></div>
-                            </div>
-                            <div class="col-md-8">
-                                <h5 class="card-title">{{venue.venueName}}</h5>
-                                <p class="card-text text-muted">{{sport.sportName}}</p>
-                                
-                                <div class="row">
-                                    <div class="col-6">
-                                        <small class="text-muted">
-                                            <i class="fas fa-calendar"></i> {{matchDate}}
-                                        </small>
-                                        <div class="fw-bold">{{matchDate}}</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="text-muted">
-                                            <i class="fas fa-clock"></i> 시간
-                                        </small>
-                                        <div class="fw-bold">{{startTime}} - {{endTime}}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="row mt-2">
-                                    <div class="col-6">
-                                        <small class="text-muted">
-                                            <i class="fas fa-users"></i> 참가 인원
-                                        </small>
-                                        <div class="fw-bold">{{currentPlayers}}/{{maxPlayers}}명</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="text-muted">
-                                            <i class="fas fa-map-marker-alt"></i> 지역
-                                        </small>
-                                        <div class="fw-bold">{{#venue.region}}{{venue.region.regionName}}{{/venue.region}}{{^venue.region}}지역 정보 없음{{/venue.region}}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- 스포츠 아이콘 -->
+    <div class="sport-icon">
+        {{#match.sport.sportCode}}
+            {{#match.sport.sportCode.equals("SOCCER")}}⚽{{/match.sport.sportCode.equals}}
+            {{#match.sport.sportCode.equals("FUTSAL")}}⚽{{/match.sport.sportCode.equals}}
+            {{#match.sport.sportCode.equals("BASEBALL")}}⚾{{/match.sport.sportCode.equals}}
+            {{#match.sport.sportCode.equals("TENNIS")}}🎾{{/match.sport.sportCode.equals}}
+            {{^match.sport.sportCode.equals}}🏃{{/match.sport.sportCode.equals}}
+        {{/match.sport.sportCode}}
+    </div>
 
-                <!-- 신청 폼 -->
-                <form action="/match/{{matchId}}/apply" method="post" id="applicationForm">
-                    <!-- 포지션 선택 -->
-                    <div class="form-section">
-                        <h5><i class="fas fa-user-tag"></i> 포지션 선택</h5>
-                        <p class="text-muted">참여하고 싶은 포지션을 선택해주세요</p>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="position-option" onclick="selectPosition('forward')">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="position" value="forward" class="me-3" required>
-                                        <div>
-                                            <strong>공격수</strong>
-                                            <small class="d-block text-muted">골을 넣는 역할</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="position-option" onclick="selectPosition('midfielder')">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="position" value="midfielder" class="me-3" required>
-                                        <div>
-                                            <strong>미드필더</strong>
-                                            <small class="d-block text-muted">공격과 수비 연결</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="position-option" onclick="selectPosition('defender')">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="position" value="defender" class="me-3" required>
-                                        <div>
-                                            <strong>수비수</strong>
-                                            <small class="d-block text-muted">골을 막는 역할</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="position-option" onclick="selectPosition('goalkeeper')">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="position" value="goalkeeper" class="me-3" required>
-                                        <div>
-                                            <strong>골키퍼</strong>
-                                            <small class="d-block text-muted">마지막 수비수</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="position-option" onclick="selectPosition('utility')">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="position" value="utility" class="me-3" required>
-                                        <div>
-                                            <strong>유틸리티</strong>
-                                            <small class="d-block text-muted">어느 포지션이든 가능</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="position-option" onclick="selectPosition('substitute')">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="position" value="substitute" class="me-3" required>
-                                        <div>
-                                            <strong>교체선수</strong>
-                                            <small class="d-block text-muted">필요시 교체 출전</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 참가비 -->
-                    <div class="form-section">
-                        <h5><i class="fas fa-credit-card"></i> 참가비</h5>
-                        <p class="text-muted">매치 참가 비용을 입력해주세요</p>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="price" class="form-label">참가비 (원)</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control price-input" id="price" name="price" 
-                                           min="0" step="100" value="0" required>
-                                    <span class="input-group-text">원</span>
-                                </div>
-                                <small class="text-muted">구장 이용료, 공, 심판비 등이 포함됩니다</small>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h6 class="card-title">참가비 안내</h6>
-                                        <ul class="list-unstyled mb-0">
-                                            <li><small>• 구장 이용료</small></li>
-                                            <li><small>• 공 및 장비비</small></li>
-                                            <li><small>• 심판비 (해당시)</small></li>
-                                            <li><small>• 보험료</small></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 추가 정보 -->
-                    <div class="form-section">
-                        <h5><i class="fas fa-info-circle"></i> 추가 정보</h5>
-                        <p class="text-muted">매치 참가에 필요한 추가 정보를 입력해주세요</p>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="experience" class="form-label">경력</label>
-                                <select class="form-select" id="experience" name="experience">
-                                    <option value="beginner">초보자 (1년 미만)</option>
-                                    <option value="intermediate" selected>중급자 (1-3년)</option>
-                                    <option value="advanced">고급자 (3-5년)</option>
-                                    <option value="expert">전문가 (5년 이상)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="preferredTime" class="form-label">선호 시간대</label>
-                                <select class="form-select" id="preferredTime" name="preferredTime">
-                                    <option value="morning">오전 (09:00-12:00)</option>
-                                    <option value="afternoon" selected>오후 (12:00-18:00)</option>
-                                    <option value="evening">저녁 (18:00-22:00)</option>
-                                    <option value="anytime">상관없음</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-3">
-                            <label for="message" class="form-label">메시지 (선택사항)</label>
-                            <textarea class="form-control" id="message" name="message" rows="3" 
-                                      placeholder="매치 주최자에게 전달할 메시지가 있다면 입력해주세요"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- 주의사항 -->
-                    <div class="alert alert-warning">
-                        <h6><i class="fas fa-exclamation-triangle"></i> 주의사항</h6>
-                        <ul class="mb-0">
-                            <li>매치 신청 후 취소는 매치 시작 24시간 전까지 가능합니다</li>
-                            <li>참가비는 매치 당일 현장에서 납부하거나 사전 결제가 필요할 수 있습니다</li>
-                            <li>부상이나 건강상의 문제가 있을 경우 참가를 자제해주세요</li>
-                            <li>매치 규칙과 매너를 준수해주세요</li>
-                        </ul>
-                    </div>
-
-                    <!-- 신청 버튼 -->
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="/match/{{matchId}}" class="btn btn-outline-secondary me-md-2">
-                            <i class="fas fa-arrow-left"></i> 돌아가기
-                        </a>
-                        <button type="submit" class="btn btn-success btn-lg">
-                            <i class="fas fa-check"></i> 매치 신청하기
-                        </button>
-                    </div>
-                </form>
-            </div>
+    <!-- 매치 정보 -->
+    <div class="match-info">
+        <h3>매치 정보</h3>
+        <div class="info-row">
+            <span class="info-label">경기장:</span>
+            <span class="info-value">{{match.venue.venueName}}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">날짜:</span>
+            <span class="info-value">{{match.matchDate}}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">시간:</span>
+            <span class="info-value">{{match.startTime}} - {{match.endTime}}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">참가자:</span>
+            <span class="info-value">{{match.currentPlayers}}/{{match.maxPlayers}}명</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">스포츠:</span>
+            <span class="info-value">{{match.sport.sportName}}</span>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // 포지션 선택 처리
-        function selectPosition(position) {
-            // 모든 포지션 옵션에서 선택 상태 제거
-            document.querySelectorAll('.position-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-            
-            // 선택된 포지션의 라디오 버튼 체크
-            const radio = document.querySelector(`input[value="${position}"]`);
-            radio.checked = true;
-            
-            // 선택된 포지션 옵션에 선택 상태 추가
-            radio.closest('.position-option').classList.add('selected');
-        }
-        
-        // 폼 제출 전 유효성 검사
-        document.getElementById('applicationForm').addEventListener('submit', function(e) {
-            const position = document.querySelector('input[name="position"]:checked');
-            const price = document.getElementById('price').value;
-            
-            if (!position) {
-                e.preventDefault();
-                alert('포지션을 선택해주세요.');
-                return;
-            }
-            
-            if (price < 0) {
-                e.preventDefault();
-                alert('참가비는 0원 이상이어야 합니다.');
-                return;
-            }
-            
-            // 확인 메시지
-            if (!confirm('매치 신청을 완료하시겠습니까?')) {
-                e.preventDefault();
-            }
-        });
-        
-        // 페이지 로드 시 기본 포지션 선택
-        document.addEventListener('DOMContentLoaded', function() {
-            selectPosition('intermediate');
-        });
-    </script>
+    <!-- 알림 메시지 -->
+    <div class="notice">
+        <strong>알림:</strong> 이 스포츠는 기본 신청 양식을 사용합니다. 
+        스포츠별 맞춤 신청 양식을 원하시면 관리자에게 문의해주세요.
+    </div>
+
+    <!-- 에러 메시지 표시 -->
+    {{#errorMessage}}
+    <div class="error-message">
+        <strong>오류:</strong> {{errorMessage}}
+    </div>
+    {{/errorMessage}}
+
+    <!-- 성공 메시지 표시 -->
+    {{#successMessage}}
+    <div class="application-status">
+        <strong>성공:</strong> {{successMessage}}
+    </div>
+    {{/successMessage}}
+
+    <!-- 현재 사용자의 신청 상태에 따라 다른 내용 표시 -->
+    {{#hasApplied}}
+        <!-- 이미 신청한 경우: 신청 취소 옵션 -->
+        <div class="application-form">
+            <h3>매치 신청 현황</h3>
+            <div class="application-status">
+                <strong>이미 이 매치에 신청하셨습니다!</strong><br>
+                신청 포지션: {{userApplication.position}}<br>
+                신청 상태: {{userApplication.status}}<br>
+                신청 시간: {{userApplication.appliedAt}}
+            </div>
+            <form action="/match/{{match.matchId}}/cancel" method="post">
+                <button type="submit" class="btn-cancel" onclick="return confirm('정말로 매치 신청을 취소하시겠습니까?')">
+                    매치 신청 취소하기
+                </button>
+            </form>
+            <a href="/match/list" class="btn-secondary">다른 매치 보기</a>
+        </div>
+    {{/hasApplied}}
+    {{^hasApplied}}
+        <!-- 신청하지 않은 경우: 신청 폼 -->
+        <div class="application-form">
+            <h3>매치 신청</h3>
+            <form action="/match/{{match.matchId}}/apply" method="post" onsubmit="return checkDuplicateApplication()">
+                <div class="form-group">
+                    <label for="position">희망 포지션</label>
+                    <input type="text" id="position" name="position" placeholder="원하는 포지션을 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">참가비 (원)</label>
+                    <input type="number" id="price" name="price" min="0" step="1000" placeholder="참가비를 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">메시지 (선택사항)</label>
+                    <textarea id="message" name="message" rows="3" placeholder="매치 참가에 대한 메시지나 특별한 요청사항이 있다면 입력해주세요"></textarea>
+                </div>
+                <button type="submit" class="btn-apply">매치 신청하기</button>
+            </form>
+        </div>
+    {{/hasApplied}}
+
+</div>
+
+<script>
+function checkDuplicateApplication() {
+    // hasApplied가 true인 경우 중복 신청 방지
+    const hasApplied = {{#hasApplied}}true{{/hasApplied}}{{^hasApplied}}false{{/hasApplied}};
+    
+    if (hasApplied) {
+        alert('이미 이 매치에 신청하셨습니다. 중복 신청은 불가능합니다.');
+        return false;
+    }
+    
+    return true;
+}
+</script>
 </body>
 </html>

@@ -27,4 +27,15 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     
     @Query("SELECT m FROM Match m JOIN FETCH m.venue v JOIN FETCH v.region JOIN FETCH m.sport WHERE m.venue.venueId = :venueId AND m.matchDate >= :date")
     List<Match> findMatchesByVenueAndDate(@Param("venueId") Long venueId, @Param("date") LocalDate date);
+
+    // 생성자 ID로 매치 조회
+    List<Match> findByCreatedBy_Id(Long userId);
+    
+    // 스포츠와 경기장 정보를 함께 로드하는 매치 목록 조회
+    @Query("SELECT m FROM Match m JOIN FETCH m.sport JOIN FETCH m.venue v JOIN FETCH v.region")
+    List<Match> findAllWithSportAndVenue();
+    
+    // 특정 스포츠의 매치를 스포츠와 경기장 정보와 함께 로드
+    @Query("SELECT m FROM Match m JOIN FETCH m.sport JOIN FETCH m.venue v JOIN FETCH v.region WHERE m.sport.sportId = :sportId")
+    List<Match> findBySportIdWithSportAndVenue(@Param("sportId") Long sportId);
 }

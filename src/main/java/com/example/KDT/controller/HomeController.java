@@ -13,8 +13,7 @@ public class HomeController {
     private PostService postService;
     
     @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("posts", postService.getAllPosts());
-        return "home";
+    public String home() {
+        return "redirect:/main";
     }
 }

@@ -34,6 +34,11 @@ public class PostCategory {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
+
+    // 커뮤니티 게시글용 카테고리 타입
+    public enum CategoryType {
+        NOTICE, COMMUNITY
+    }
 }
 
 
