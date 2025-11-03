@@ -20,7 +20,7 @@ mysql -u root -p < 테이블_생성_SQL.sql
 
 | 컬럼명   | 타입         | 설명            |
 | -------- | ------------ | --------------- |
-| user_id  | INT          | 사용자 ID (PK)  |
+| user_id  | VARCHAR(255) | 사용자 ID (PK)  |
 | email    | VARCHAR(100) | 이메일 (UNIQUE) |
 | password | VARCHAR(255) | 비밀번호        |
 | name     | VARCHAR(50)  | 이름            |
@@ -30,7 +30,7 @@ mysql -u root -p < 테이블_생성_SQL.sql
 | 컬럼명       | 타입         | 설명                  |
 | ------------ | ------------ | --------------------- |
 | product_id   | INT          | 상품 ID (PK)          |
-| user_id      | INT          | 판매자 ID (FK → USER) |
+| user_id      | VARCHAR(255) | 판매자 ID (FK → USER) |
 | product_name | VARCHAR(100) | 상품명                |
 
 ### 3. IMAGE (이미지 테이블)
